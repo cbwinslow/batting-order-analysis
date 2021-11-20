@@ -9,7 +9,7 @@
 '''
 
 import random
-from typing import List
+from typing import List, Tuple
 import itertools
 import sys
 import math
@@ -84,7 +84,7 @@ def get_PA_outcome(threshold : List[float], outcomes : List[str]) -> str:
 
     return outcomes[-1]    
 
-def sim_inning(player_ratios : dict, player_thresholds : List[float], outcomes : List[str], leadoff : int) -> int:
+def sim_inning(player_ratios : dict, player_thresholds : List[float], outcomes : List[str], leadoff : int) -> Tuple[int, int]:
     runs = 0
     cur_batter = leadoff
     runners = [False, False, False]
@@ -169,6 +169,8 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
     
     total_runs = 0
     worst_runs = math.inf
+    worst_order = None
+
     best_runs = 0
     best_order = None
     outcomes = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']    
@@ -193,6 +195,7 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
 
         if avg_runs_order < worst_runs:
             worst_runs = avg_runs_order
+            worst_order = order
 
     print('\n')
     print(f'Total games simulated: {len(orders) * per_order:,}')
@@ -203,9 +206,18 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
     print(f'Avg. runs for sim: {total_runs/len(orders):.2f}')
     print(f'Min runs for sim: {worst_runs}')
     print()
+
     print(f'Best batting order: {best_order}')
     for i, ind in enumerate(best_order):
-        print(f'{str(i+1)}) {player_ratios[ind]}')
+        print(f'{str(i+1)}) {player_summary(player_ratios[ind])}')
+    print()
+
+    print(f'Worst batting order: {worst_order}')
+    for i, ind in enumerate(worst_order):
+        print(f'{str(i+1)}) {player_summary(player_ratios[ind])}')
+
+def player_summary(player : dict) -> str:
+    return f'{player["first_name"]} {player["last_name"]}: {player["on_base_percent"]} OBP, {player["slg_percent"]} SLG, {player["on_base_plus_slg"]} OPS'
 
 if __name__ == '__main__':
     players = []
@@ -262,9 +274,10 @@ if __name__ == '__main__':
 
     print("Players: ")
     for player in players:
-        print(f'{player["first_name"]} {player["last_name"]}: {player["on_base_percent"]} OBP, {player["slg_percent"]} SLG, {player["on_base_plus_slg"]} OPS')
+        print(player_summary(player))
     print()
     
     assert len(players) == 9
 
-    run_sim(players, per_order=2)
+    # set per_order to be the number of simulations to run per order
+    run_sim(players, per_order=1)
