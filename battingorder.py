@@ -280,4 +280,4 @@ if __name__ == '__main__':
     assert len(players) == 9
 
     # set per_order to be the number of simulations to run per order
-    run_sim(players, per_order=1)
+    run_sim(players, per_order=500)
