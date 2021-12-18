@@ -219,27 +219,37 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
 def player_summary(player : dict) -> str:
     return f'{player["first_name"]} {player["last_name"]}: {player["on_base_percent"]} OBP, {player["slg_percent"]} SLG, {player["on_base_plus_slg"]} OPS'
 
-if __name__ == '__main__':
+def parse_arguments(args):
+    '''
+        Parses the commandline arguments
+        Possible options: -f (user defined lineup filename, see giants.txt) and -n (number of simulations per batting order)
+    '''
+
+    lineup_filename = None
+    sims_per_order = 1
+
+    for i in range(len(args) // 2):
+        opt_index = i*2
+        arg_index = opt_index + 1
+        if args[opt_index] == '-f':
+            lineup_filename = args[arg_index]
+        elif args[opt_index] == '-n':
+            sims_per_order = int(args[arg_index])
+
+    return lineup_filename, sims_per_order
+
+def get_players(lineup_filename):
     players = []
 
-    # remove all spaces, weird baseball savant thing
-    with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
-        new_content = ''
-        for line in stats_csv:
-            updated_line = line.replace(' ', '')
-            new_content += updated_line
-
-    with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
-        stats_csv.write(new_content)
-
-    if len(sys.argv) == 2:
+    if lineup_filename is not None:
         # get the players specified in the input file
         lineup = []
-        with open(sys.argv[1], 'r') as f_players:
+        with open(lineup_filename, 'r') as f_players:
             for line in f_players:
                 first, last = line.split()
                 lineup.append(f'{last},{first}')
 
+        # read the player data from master file
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
             col_names = stats_csv.readline().strip()
             
@@ -266,13 +276,29 @@ if __name__ == '__main__':
                 player_ratio = get_player_ratio(stats)
                 ratios.append(player_ratio) 
 
-        # select 9 random players to run the sim
-        player_indexes = get_nine(len(ratios))
-        print('Players:')
-        for ind in player_indexes:
-            players.append(ratios[ind])
+            # select 9 random players to run the sim
+            player_indexes = get_nine(len(ratios))
+            players = [ratios[p] for p in player_indexes]
 
-    print("Players: ")
+    return players 
+
+if __name__ == '__main__':
+    players = []
+
+    # remove all spaces, weird baseball savant thing
+    with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
+        new_content = ''
+        for line in stats_csv:
+            updated_line = line.replace(' ', '')
+            new_content += updated_line
+    with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
+        stats_csv.write(new_content)
+
+    lineup_filename, sims_per_order = parse_arguments(sys.argv[1:])
+
+    players = get_players(lineup_filename)
+
+    print("Players:")
     for player in players:
         print(player_summary(player))
     print()
@@ -280,4 +306,4 @@ if __name__ == '__main__':
     assert len(players) == 9
 
     # set per_order to be the number of simulations to run per order
-    run_sim(players, per_order=500)
+    run_sim(players, per_order=sims_per_order)
