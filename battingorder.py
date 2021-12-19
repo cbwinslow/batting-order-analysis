@@ -4,8 +4,7 @@
     Description: Selects a lineup of 9 players from stats.csv and simulates all possible batting orders, determing which results in
         the most average runs per 9 innings. Prints out summary statistics for the simulation.
     Usage: If you want to supply a determined line up of 9 players, format it like giants.txt (ensure naming corresponds to stats.csv)
-        and run: python3 battingorder.py <lineup file>
-        If you want a random lineup: python3 battingorder.py
+        python3 battingorder.py -f <filename> -n <simulations_per_order>
 '''
 
 import random
@@ -13,6 +12,12 @@ from typing import List, Tuple
 import itertools
 import sys
 import math
+import timeit
+from multiprocessing import Pool
+from functools import partial
+from statistics import mean
+import tqdm
+from progressbar import ProgressBar, SimpleProgress
 
 def get_player_ratio(stats: dict) -> dict:
     ratios = {}
@@ -164,46 +169,42 @@ def sim_inning(player_ratios : dict, player_thresholds : List[float], outcomes :
 
     return runs, new_batter(cur_batter)
 
-def run_sim(player_ratios : dict, per_order : int = 1) -> None:
-    orders = list(itertools.permutations([i for i in range(9)]))
-    
-    total_runs = 0
-    worst_runs = math.inf
-    worst_order = None
+def sim_order(orders, per_order, player_ratios, player_thresholds, outcomes):
+    tot_runs_order = 0
+    for _ in range(per_order):
+        leadoff = 0
+        for inning in range(9):
+            runs, leadoff = sim_inning(player_ratios, player_thresholds, outcomes, leadoff)
 
-    best_runs = 0
-    best_order = None
+            tot_runs_order += runs
+
+    avg_runs_order = tot_runs_order / per_order
+   
+    return avg_runs_order 
+
+def run_sim(player_ratios : dict, per_order : int = 1) -> None:
+    orders = list(itertools.permutations([i for i in range(9)]))[:10000]
     outcomes = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']    
     player_thresholds = [get_PA_thresholds(ratio, outcomes) for ratio in player_ratios]
 
-    for i, order in enumerate(orders):
-        print(f'Batting order num: {i}, {i/len(orders)*100:.2f}% complete       ', end='\r')
-        tot_runs_order = 0
-        for _ in range(per_order):
-            leadoff = 0
-            for inning in range(9):
-                runs, leadoff = sim_inning(player_ratios, player_thresholds, outcomes, leadoff)
+    pool = Pool(10)
+    avg_runs_per_order = list(tqdm.tqdm(pool.imap(partial(sim_order, per_order=per_order, player_ratios=player_ratios, player_thresholds=player_thresholds, outcomes=outcomes), orders), total=len(orders)))
+#    avg_runs_per_order = list(pool.imap(partial(sim_order, per_order=per_order, player_ratios=player_ratios, player_thresholds=player_thresholds, outcomes=outcomes), orders))
+    pool.close()
+    pool.join()
 
-                tot_runs_order += runs
-    
-        avg_runs_order = tot_runs_order / per_order
-        if avg_runs_order > best_runs:
-            best_runs = avg_runs_order
-            best_order = order
+    best_runs = max(avg_runs_per_order)
+    best_order = orders[avg_runs_per_order.index(best_runs)]
+    worst_runs = min(avg_runs_per_order)
+    worst_order = orders[avg_runs_per_order.index(worst_runs)]
+    avg_runs = mean(avg_runs_per_order)
 
-        total_runs += avg_runs_order
-
-        if avg_runs_order < worst_runs:
-            worst_runs = avg_runs_order
-            worst_order = order
-
-    print('\n')
     print(f'Total games simulated: {len(orders) * per_order:,}')
     print(f'Games simulated per order: {per_order:,}')
     print(f'Total orders simulated: {len(orders):,}')
     print()
     print(f'Max runs for sim: {best_runs}')
-    print(f'Avg. runs for sim: {total_runs/len(orders):.2f}')
+    print(f'Avg. runs for sim: {avg_runs:.2f}')
     print(f'Min runs for sim: {worst_runs}')
     print()
 
@@ -304,6 +305,9 @@ if __name__ == '__main__':
     print()
     
     assert len(players) == 9
-
+    
+    start = timeit.default_timer()
     # set per_order to be the number of simulations to run per order
     run_sim(players, per_order=sims_per_order)
+    end = timeit.default_timer()
+    print(f'\nTotal time: {end - start:.2f} seconds')
