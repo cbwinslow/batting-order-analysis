@@ -116,6 +116,8 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
     outs = 0
 
     while outs < 3:
+        assert thru_order < 10
+
         outcome = generated_outcomes[cur_batter][thru_order]
 
         if outcome[:5] == 'b_out' or outcome == 'b_strikeout':
@@ -212,7 +214,7 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
         Simulates per_order games for each possible batting order
     '''
 
-    orders = list(itertools.permutations([i for i in range(9)]))[:10000]
+    orders = list(itertools.permutations([i for i in range(9)]))
     outcomes = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
     player_thresholds = [get_PA_thresholds(ratio, outcomes) for ratio in player_ratios]
 
