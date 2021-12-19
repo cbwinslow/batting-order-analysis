@@ -1,0 +1,43 @@
+Players:
+Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+Brandon Belt: .378 OBP, .597 SLG, .975 OPS
+Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+Alex Dickerson: .304 OBP, .420 SLG, .725 OPS
+Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+Logan Webb: .151 OBP, .283 SLG, .434 OPS
+LaMonte WadeJr.: .323 OBP, .482 SLG, .805 OPS
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 10000/10000 [01:59<00:00, 83.94it/s]
+Total games simulated: 5,000,000
+Games simulated per order: 500
+Total orders simulated: 10,000
+
+Max runs for sim: 5.214
+Avg. runs for sim: 5.19
+Min runs for sim: 5.176
+
+Best batting order: (0, 1, 8, 3, 5, 2, 6, 7, 4)
+1) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+2) Brandon Belt: .378 OBP, .597 SLG, .975 OPS
+3) LaMonte WadeJr.: .323 OBP, .482 SLG, .805 OPS
+4) Alex Dickerson: .304 OBP, .420 SLG, .725 OPS
+5) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+6) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+7) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+8) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+9) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+
+Worst batting order: (0, 1, 3, 5, 6, 8, 4, 2, 7)
+1) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+2) Brandon Belt: .378 OBP, .597 SLG, .975 OPS
+3) Alex Dickerson: .304 OBP, .420 SLG, .725 OPS
+4) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+5) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+6) LaMonte WadeJr.: .323 OBP, .482 SLG, .805 OPS
+7) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+8) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+9) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+
+Total time: 119.55 seconds
