@@ -17,6 +17,7 @@ from multiprocessing import Pool
 from functools import partial
 from statistics import mean
 import tqdm
+import heapq
 
 def get_player_ratio(stats: dict) -> dict:
     '''
@@ -122,6 +123,7 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
 
         if outcome[:5] == 'b_out' or outcome == 'b_strikeout':
             # out, need to account for potential sacrficies on fly and ground outs
+            # and double/triple plays
             outs += 1
             if outs == 3:
                 # end of inning, no sacs possible
@@ -140,11 +142,14 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
 
             elif outcome == 'b_out_ground':
                 sac_rate = 0.001
+                double_play_rate = 0.3
 
                 if random.random() < sac_rate:
                     runs += int(runners[2])
                     runners = [False, runners[0], runners[1]]
-
+                elif random.random() < double_play_rate:
+                    outs += int(runners[0])
+                    runners = [False, runners[1], runners[2]]
 
         elif outcome == 'b_walk' or outcome == 'b_catcher_interf' or outcome == 'b_hit_by_pitch':
             # right now treating all these the same, just cascade runner advancements along starting with the batter
@@ -231,6 +236,7 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
 
         generated_outcomes.append(game_outcomes)
 
+    # run the simulation with the at bat outcomes
     pool = Pool(10)
     avg_runs_per_order = list(tqdm.tqdm( \
         pool.imap(partial(sim_order, per_order=per_order, generated_outcomes=generated_outcomes), orders), \
@@ -238,10 +244,13 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
     pool.close()
     pool.join()
 
+    # aggregate data
+    avg_runs_indexes = [(runs, i) for i, runs in enumerate(avg_runs_per_order)]
+    best_five = heapq.nlargest(5, avg_runs_indexes)
+    worst_five = heapq.nsmallest(5, avg_runs_indexes)
+   
     best_runs = max(avg_runs_per_order)
-    best_order = orders[avg_runs_per_order.index(best_runs)]
     worst_runs = min(avg_runs_per_order)
-    worst_order = orders[avg_runs_per_order.index(worst_runs)]
     avg_runs = mean(avg_runs_per_order)
 
     print(f'Total games simulated: {len(orders) * per_order:,}')
@@ -253,14 +262,21 @@ def run_sim(player_ratios : dict, per_order : int = 1) -> None:
     print(f'Min runs for sim: {worst_runs}')
     print()
 
-    print(f'Best batting order: {best_order}')
-    for i, ind in enumerate(best_order):
-        print(f'{str(i+1)}) {player_summary(player_ratios[ind])}')
-    print()
+    print(f'Top 5 batting orders:')
+    for rank in range(5):
+        order = orders[best_five[rank][1]] 
+        print(f'{str(rank+1)}) Average runs for order: {best_five[rank][0]}')
+        for i, ind in enumerate(order):
+            print(f'\t{str(i+1)}) {player_summary(player_ratios[ind])}')
+        print()
 
-    print(f'Worst batting order: {worst_order}')
-    for i, ind in enumerate(worst_order):
-        print(f'{str(i+1)}) {player_summary(player_ratios[ind])}')
+    print(f'Bottom 5 batting orders:')
+    for rank in range(5):
+        order = orders[worst_five[rank][1]] 
+        print(f'{str(rank+1)}) Average runs for order: {worst_five[rank][0]}')
+        for i, ind in enumerate(order):
+            print(f'\t{str(i+1)}) {player_summary(player_ratios[ind])}')
+        print()
 
 def player_summary(player : dict) -> str:
     return f'{player["first_name"]} {player["last_name"]}: {player["on_base_percent"]} OBP, {player["slg_percent"]} SLG, {player["on_base_plus_slg"]} OPS'
