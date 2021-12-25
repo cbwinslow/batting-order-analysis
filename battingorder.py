@@ -117,7 +117,8 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
     outs = 0
 
     while outs < 3:
-        assert thru_order < 10
+        if len(generated_outcomes[cur_batter]) <= thru_order:
+            break        
 
         outcome = generated_outcomes[cur_batter][thru_order]
 
@@ -189,6 +190,8 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
             # all runners and batter score
             runs += sum(runners) + 1
             runners = [False, False, False]
+        else:
+            raise Exception(f"Invalid outcome name: {outcome}")
 
         cur_batter, thru_order = new_batter(cur_batter, thru_order)
 
@@ -214,27 +217,12 @@ def sim_order(orders:List[int], per_order:int, generated_outcomes:List[dict]) ->
 
     return avg_runs_order
 
-def run_sim(player_ratios : dict, per_order : int = 1) -> None:
+def run_sim(player_ratios : dict, generated_outcomes:List[dict], per_order : int = 1) -> None:
     '''
         Simulates per_order games for each possible batting order
     '''
 
     orders = list(itertools.permutations([i for i in range(9)]))
-    outcomes = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
-    player_thresholds = [get_PA_thresholds(ratio, outcomes) for ratio in player_ratios]
-
-    # pre-generate 10 at bats for each player per_order times
-    # this way, the outcomes are held constant across batting orders, so variance should fall
-    generated_outcomes = []
-    for _ in range(per_order):
-        game_outcomes = {}
-        for i, player in enumerate(player_ratios):
-            game_outcomes[i] = []
-            for _ in range(10):
-                outcome = get_PA_outcome(player_thresholds[i], outcomes)
-                game_outcomes[i].append(outcome)
-
-        generated_outcomes.append(game_outcomes)
 
     # run the simulation with the at bat outcomes
     pool = Pool(10)
@@ -289,16 +277,22 @@ def parse_arguments(args):
 
     lineup_filename = None
     sims_per_order = 1
+    outcome_filename = None
 
     for i in range(len(args) // 2):
         opt_index = i*2
         arg_index = opt_index + 1
-        if args[opt_index] == '-f':
+        if args[opt_index] == '-lf':
             lineup_filename = args[arg_index]
         elif args[opt_index] == '-n':
             sims_per_order = int(args[arg_index])
+        elif args[opt_index] == '-of':
+            outcome_filename = args[arg_index]
 
-    return lineup_filename, sims_per_order
+    if outcome_filename is not None:
+        sims_per_order = 1
+
+    return lineup_filename, outcome_filename, sims_per_order
 
 def get_players(lineup_filename):
     players = []
@@ -344,6 +338,42 @@ def get_players(lineup_filename):
 
     return players
 
+def generate_at_bat_outcomes(outcome_filename:str, per_order:int, player_ratios:dict) -> List[dict]:
+    generated_outcomes = []
+
+    if outcome_filename is None:
+        outcomes = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
+        player_thresholds = [get_PA_thresholds(ratio, outcomes) for ratio in player_ratios]
+
+        # pre-generate 10 at bats for each player per_order times
+        # this way, the outcomes are held constant across batting orders, so variance should fall
+        for _ in range(per_order):
+            game_outcomes = {}
+            for i, player in enumerate(player_ratios):
+                game_outcomes[i] = []
+                for _ in range(10):
+                    outcome = get_PA_outcome(player_thresholds[i], outcomes)
+                    game_outcomes[i].append(outcome)
+
+            generated_outcomes.append(game_outcomes)
+    else:
+        game_outcomes = {}
+        for i, player in enumerate(player_ratios):
+            game_outcomes[i] = []
+            player_outcomes = []
+            with open(outcome_filename, 'r') as outcome_f:
+                player_name = player['first_name'] + ' ' + player['last_name']
+                for line in outcome_f:
+                    if line[:len(player_name)] == player_name:
+                        player_outcomes = line[:-1].split(':')[1].split(',')
+
+            for outcome in player_outcomes:
+                game_outcomes[i].append(outcome)
+
+        generated_outcomes.append(game_outcomes)
+    print(generated_outcomes)
+    return generated_outcomes
+
 if __name__ == '__main__':
     start = timeit.default_timer()
     players = []
@@ -357,10 +387,10 @@ if __name__ == '__main__':
     with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
         stats_csv.write(new_content)
 
-    lineup_filename, sims_per_order = parse_arguments(sys.argv[1:])
+    lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
 
     players = get_players(lineup_filename)
-
+    
     print("Players:")
     for player in players:
         print(player_summary(player))
@@ -368,8 +398,10 @@ if __name__ == '__main__':
 
     assert len(players) == 9
 
+    outcomes = generate_at_bat_outcomes(outcome_filename, sims_per_order, players)
+
     # set per_order to be the number of simulations to run per order
-    run_sim(players, per_order=sims_per_order)
+    run_sim(players, outcomes, per_order=sims_per_order)
 
     end = timeit.default_timer()
     print(f'\nTotal time: {end - start:.2f} seconds')
