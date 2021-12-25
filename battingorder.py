@@ -1,10 +1,15 @@
 '''
     File: battingorder.py
     Author: Drew Scott
-    Description: Selects a lineup of 9 players from stats.csv and simulates all possible batting orders, determing which results in
+    Description: Uses a lineup of 9 players  and simulates all possible batting orders, determining which results in
         the most average runs per 9 innings. Prints out summary statistics for the simulation.
-    Usage: If you want to supply a determined line up of 9 players, format it like giants.txt (ensure naming corresponds to stats.csv)
-        python3 battingorder.py -f <filename> -n <simulations_per_order>
+    Usage:
+        For a random lineup:
+            python3 battingorder.py -n <simulations_per_order>
+        For a prespecified lineup of 9 players, format it like giants.txt (ensure naming corresponds to stats.csv)
+            python3 battingorder.py -lf <lineup filename> -n <simulations_per_order>
+        For a prespecified lineup of 9 players and at-bat outcomes (format like giants_outcomes.txt)
+            python3 battingorder.py -lf <lineup filename> -of <outcomes filename>
 '''
 
 import random
@@ -106,19 +111,26 @@ def get_PA_outcome(threshold : List[float], outcomes : List[str]) -> str:
 
     return outcomes[-1]
 
-def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[int, int]:
+def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int, order:List[int]) -> Tuple[int, int]:
     '''
         Simulates an inning of play
         Returns the number of runs scored in the inning and what batter will lead off the next inning
     '''
+#    print('**** NEW INNING ****')
     runs = 0
-    cur_batter = leadoff
+    cur_batter_pos = leadoff
+    cur_batter = order[cur_batter_pos]
     runners = [False, False, False]
     outs = 0
 
     while outs < 3:
+        # there aren't enough outcomes for this batter, so guarantee an out
+        # TODO: actually simulate AB
         if len(generated_outcomes[cur_batter]) <= thru_order:
-            break        
+            outs += 1
+            cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
+            cur_batter = order[cur_batter_pos]
+            continue 
 
         outcome = generated_outcomes[cur_batter][thru_order]
 
@@ -127,9 +139,11 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
             # and double/triple plays
             outs += 1
             if outs == 3:
+#                print(outcome, runs, cur_batter, thru_order)
                 # end of inning, no sacs possible
                 break
 
+            # TODO: tweak rates
             if outcome == 'b_out_fly':
                 third_scores = 0.2
                 second_advances = 0.1
@@ -151,6 +165,9 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
                 elif random.random() < double_play_rate:
                     outs += int(runners[0])
                     runners = [False, runners[1], runners[2]]
+
+                    if outs >= 3:
+                        break
 
         elif outcome == 'b_walk' or outcome == 'b_catcher_interf' or outcome == 'b_hit_by_pitch':
             # right now treating all these the same, just cascade runner advancements along starting with the batter
@@ -193,12 +210,16 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int) -> Tuple[
         else:
             raise Exception(f"Invalid outcome name: {outcome}")
 
-        cur_batter, thru_order = new_batter(cur_batter, thru_order)
+#        print(outcome, runs, cur_batter, thru_order)
 
-    cur_batter, thru_order = new_batter(cur_batter, thru_order)
-    return runs, cur_batter, thru_order
+        cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
+        cur_batter = order[cur_batter_pos]
 
-def sim_order(orders:List[int], per_order:int, generated_outcomes:List[dict]) -> float:
+    cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
+
+    return runs, cur_batter_pos, thru_order
+
+def sim_order(order:List[int], per_order:int, generated_outcomes:List[dict]) -> float:
     '''
         Simulates per_order games for each order
         Parallelized using imap
@@ -209,7 +230,7 @@ def sim_order(orders:List[int], per_order:int, generated_outcomes:List[dict]) ->
         thru_order = 0
         game_outcomes = generated_outcomes[game_num]
         for inning in range(9):
-            runs, leadoff, thru_order = sim_inning(game_outcomes, leadoff, thru_order)
+            runs, leadoff, thru_order = sim_inning(game_outcomes, leadoff, thru_order, order)
 
             tot_runs_order += runs
 
@@ -223,7 +244,9 @@ def run_sim(player_ratios : dict, generated_outcomes:List[dict], per_order : int
     '''
 
     orders = list(itertools.permutations([i for i in range(9)]))
-
+#    orders = [[5,8,0,1,4,6,7,2,3]]
+#    orders = [[0,1,3,5,4,2,6,8,7]]
+#    orders = [[0,1,3,5,7,4,6,8,2]]
     # run the simulation with the at bat outcomes
     pool = Pool(10)
     avg_runs_per_order = list(tqdm.tqdm( \
@@ -251,7 +274,7 @@ def run_sim(player_ratios : dict, generated_outcomes:List[dict], per_order : int
     print()
 
     print(f'Top 5 batting orders:')
-    for rank in range(5):
+    for rank in range(len(best_five)):
         order = orders[best_five[rank][1]] 
         print(f'{str(rank+1)}) Average runs for order: {best_five[rank][0]}')
         for i, ind in enumerate(order):
@@ -259,7 +282,7 @@ def run_sim(player_ratios : dict, generated_outcomes:List[dict], per_order : int
         print()
 
     print(f'Bottom 5 batting orders:')
-    for rank in range(5):
+    for rank in range(len(worst_five)):
         order = orders[worst_five[rank][1]] 
         print(f'{str(rank+1)}) Average runs for order: {worst_five[rank][0]}')
         for i, ind in enumerate(order):
@@ -294,8 +317,8 @@ def parse_arguments(args):
 
     return lineup_filename, outcome_filename, sims_per_order
 
-def get_players(lineup_filename):
-    players = []
+def get_players(lineup_filename:str) -> List[dict]:
+    players = [None] * 9
 
     if lineup_filename is not None:
         # get the players specified in the input file
@@ -318,7 +341,7 @@ def get_players(lineup_filename):
                     stats = get_stats(line.strip(), col_names)
 
                     player_ratio = get_player_ratio(stats)
-                    players.append(player_ratio)
+                    players[lineup.index(name)] = player_ratio
 
     else:
         # get all of the players
@@ -371,7 +394,7 @@ def generate_at_bat_outcomes(outcome_filename:str, per_order:int, player_ratios:
                 game_outcomes[i].append(outcome)
 
         generated_outcomes.append(game_outcomes)
-    print(generated_outcomes)
+
     return generated_outcomes
 
 if __name__ == '__main__':

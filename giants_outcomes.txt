@@ -3,7 +3,7 @@ Brandon Crawford:b_strikeout,b_single,b_out_fly,b_out_line_drive
 Evan Longoria:b_out_popup,b_strikeout,b_strikeout
 Logan Webb:b_strikeout,b_strikeout,b_strikeout
 Kris Bryant:b_single,b_strikeout,b_single,b_single
-Tommy LaStella:b_out_fly,b_out_line_drive,b_strikeout,b_lineout
+Tommy LaStella:b_out_fly,b_out_line_drive,b_strikeout,b_out_line_drive
 Mike Yastrzemski:b_out_popup,b_out_ground,b_out_ground,b_strikeout
 Wilmer Flores:b_single,b_out_popup,b_out_line_drive,b_strikeout
 Darin Ruf:b_out_fly,b_out_fly,b_home_run,b_strikeout

@@ -1,0 +1,135 @@
+Players:
+Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+Logan Webb: .151 OBP, .283 SLG, .434 OPS
+Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 362880/362880 [33:15<00:00, 181.81it/s]
+Total games simulated: 58,786,560
+Games simulated per order: 162
+Total orders simulated: 362,880
+
+Max runs for sim: 4.882716049382716
+Avg. runs for sim: 4.44
+Min runs for sim: 3.9876543209876543
+
+Top 5 batting orders:
+1) Average runs for order: 4.882716049382716
+	1) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	2) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	3) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	4) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	5) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	6) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	7) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	8) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	9) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+
+2) Average runs for order: 4.882716049382716
+	1) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	2) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	3) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	4) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	5) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	6) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	7) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	8) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	9) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+
+3) Average runs for order: 4.8765432098765435
+	1) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	2) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	3) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	4) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	5) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	6) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	7) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	8) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	9) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+
+4) Average runs for order: 4.8765432098765435
+	1) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	2) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	3) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	4) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	5) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	6) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	7) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	8) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	9) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+
+5) Average runs for order: 4.87037037037037
+	1) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	2) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	3) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	4) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	5) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	6) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	7) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	8) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	9) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+
+Bottom 5 batting orders:
+1) Average runs for order: 3.9876543209876543
+	1) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	2) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	3) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	4) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	5) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	6) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	7) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	8) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	9) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+
+2) Average runs for order: 3.9876543209876543
+	1) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	2) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	3) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	4) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	5) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	6) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	7) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	8) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	9) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+
+3) Average runs for order: 4.012345679012346
+	1) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	2) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	3) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	4) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	5) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	6) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	7) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	8) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	9) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+
+4) Average runs for order: 4.018518518518518
+	1) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	2) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	3) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	4) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	5) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	6) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+	7) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	8) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	9) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+
+5) Average runs for order: 4.018518518518518
+	1) Logan Webb: .151 OBP, .283 SLG, .434 OPS
+	2) Tommy LaStella: .306 OBP, .405 SLG, .710 OPS
+	3) Evan Longoria: .351 OBP, .482 SLG, .833 OPS
+	4) Buster PoseyIII: .390 OBP, .499 SLG, .889 OPS
+	5) Mike Yastrzemski: .310 OBP, .457 SLG, .767 OPS
+	6) Darin Ruf: .385 OBP, .519 SLG, .904 OPS
+	7) Wilmer Flores: .335 OBP, .447 SLG, .782 OPS
+	8) Kris Bryant: .353 OBP, .481 SLG, .835 OPS
+	9) Brandon Crawford: .373 OBP, .522 SLG, .895 OPS
+
+
+Total time: 1997.01 seconds
+
