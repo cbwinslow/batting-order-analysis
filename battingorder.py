@@ -206,22 +206,22 @@ def run_sim(lineup:Lineup, per_order:int) -> None:
         print(f'Order of interest:')
         print(f'Average runs for order: {avg_runs_per_order[0]}')
         for i, ind in enumerate(orders[0]):
-            print(f'\t{str(i+1)}) {str(lineup.players[ind])}')
+            print(f'\t{str(lineup.players[ind])}')
 
     print(f'\nTop 5 batting orders:')
     for rank in range(len(best_five)):
         order = orders[best_five[rank][1]] 
         print(f'{str(rank+1)}) Average runs for order: {best_five[rank][0]}')
         for i, ind in enumerate(order):
-            print(f'\t{str(i+1)}) {str(lineup.players[ind])}')
+            print(f'\t{str(lineup.players[ind])}')
         print()
 
     print(f'Bottom 5 batting orders:')
-    for rank in range(len(worst_five)):
+    for rank in range(len(worst_five)-1, -1, -1):
         order = orders[worst_five[rank][1]] 
-        print(f'{str(rank+1)}) Average runs for order: {worst_five[rank][0]}')
+        print(f'{str(len(orders) - rank)}) Average runs for order: {worst_five[rank][0]}')
         for i, ind in enumerate(order):
-            print(f'\t{str(i+1)}) {str(lineup.players[ind])}')
+            print(f'\t{str(lineup.players[ind])}')
         print()
 
 def get_nine(total_count : int) -> List[int]:
@@ -259,8 +259,8 @@ def get_lineup(lineup_filename:str) -> Lineup:
                 if name in player_names:
                     players[player_names.index(name)] = Player(line)
 
-            for player in players:
-                lineup.add_player(player)
+        for player in players:
+            lineup.add_player(player)
     else:
         # get all of the players
         players = []
@@ -307,26 +307,19 @@ def parse_arguments(args):
 
 if __name__ == '__main__':
     start = timeit.default_timer()
+
+    Player.set_metadata('stats.csv')
     players = []
 
-    # remove all spaces, weird baseball savant thing
-    with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
-        new_content = ''
-        for line in stats_csv:
-            updated_line = line.replace(' ', '')
-            new_content += updated_line
-    with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
-        stats_csv.write(new_content)
-
     lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
+
     lineup = get_lineup(lineup_filename)
-    
+    lineup.set_pa_outcomes(outcome_filename, sims_per_order)
+
     print("Players:")
     for player in lineup.players:
         print(player)
     print()
-
-    lineup.set_pa_outcomes(outcome_filename, sims_per_order)
 
     # set per_order to be the number of simulations to run per order
     run_sim(lineup, sims_per_order)

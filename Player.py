@@ -19,10 +19,27 @@ class Player:
         self.pa_outcomes = None
 
     @classmethod
-    def set_col_names(cls, stats_filename:str) -> None:
+    def set_metadata(cls, stats_filename:str) -> None:
+        # remove all spaces, weird baseball savant thing
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
+            new_content = ''
+            for line in stats_csv:
+                updated_line = line.replace(' ', '') 
+                new_content += updated_line
+        with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
+            stats_csv.write(new_content)
+
+        with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
+            # get all of the column names
             cls.col_names = stats_csv.readline().split(',')
-        
+           
+            # get the maximum name length 
+            cls.max_name_length = 0
+            for line in stats_csv:
+                last_length = line.index(',')
+                first_length = line[last_length+1:].index(',')
+                
+                cls.max_name_length = max(cls.max_name_length, last_length + first_length + 1)
 
     def set_pa_outcomes(self, pa_outcomes:List[str]) -> None:
         '''
@@ -100,8 +117,11 @@ class Player:
 
         return d
 
-    def __repr__(self):
-        return f'{self.player_info["first_name"]} {self.player_info["last_name"]}: ' + \
-               f'{self.player_info["on_base_plus_slg"]} OPS, {self.player_info["woba"]} WOBA'
+    def _name_length(self):
+        return len(self.player_info['first_name']) + len(self.player_info['last_name'])
 
-Player.set_col_names('stats.csv')
+    def __repr__(self):
+        tab_size = 8
+        num_tabs = ((Player.max_name_length + 1 - self._name_length()) // tab_size) + 1
+        return f'{self.player_info["first_name"]} {self.player_info["last_name"]}:' + '\t'*num_tabs + \
+               f'{self.player_info["on_base_plus_slg"]} OPS, {self.player_info["woba"]} WOBA'
