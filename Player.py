@@ -9,16 +9,20 @@ from typing import List
 
 class Player:
     # TODO: don't hardcode this, but try to keep as a static variable
-    col_names = ['last_name', 'first_name', 'player_id', 'year', 'b_total_pa', 'b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', \
-                'slg_percent', 'on_base_percent', 'on_base_plus_slg', 'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
-
-    pa_col_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
+    pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', \
+                        'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
 
     def __init__(self, stat_line: str):
         self.player_info = self.get_info(stat_line)
         self.player_pa_probs = self.get_pa_probs(self.player_info)
         self.player_pa_thresholds = self.get_pa_thresholds()
         self.pa_outcomes = None
+
+    @classmethod
+    def set_col_names(cls, stats_filename:str) -> None:
+        with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
+            cls.col_names = stats_csv.readline().split(',')
+        
 
     def set_pa_outcomes(self, pa_outcomes:List[str]) -> None:
         '''
@@ -31,11 +35,11 @@ class Player:
             Returns the name of the plate appearance outcome based on a randomly generated number
         '''
         rand_outcome = random.random()
-        for out_threshold, outcome in zip(self.player_pa_thresholds, Player.pa_col_names):
+        for out_threshold, outcome in zip(self.player_pa_thresholds, Player.pa_outcome_names):
             if rand_outcome < out_threshold:
                 return outcome
 
-        return Player.pa_col_names[-1]
+        return Player.pa_outcome_names[-1]
 
     def generate_pa_outcomes(self, n_games:int) -> None:
         '''
@@ -59,8 +63,8 @@ class Player:
         '''
         thresholds = []
 
-        thresholds.append(self.player_pa_probs[Player.pa_col_names[0]])
-        for i, outcome in enumerate(Player.pa_col_names[1:], start=1):
+        thresholds.append(self.player_pa_probs[Player.pa_outcome_names[0]])
+        for i, outcome in enumerate(Player.pa_outcome_names[1:], start=1):
             thresholds.append(thresholds[i-1] + self.player_pa_probs[outcome])
 
         return thresholds
@@ -74,7 +78,7 @@ class Player:
         total_pa = player_info['b_total_pa']
 
         for outcome, outcome_count in player_info.items():
-            if outcome not in Player.pa_col_names:
+            if outcome not in Player.pa_outcome_names:
                 continue
 
             p = outcome_count / total_pa
@@ -98,4 +102,6 @@ class Player:
 
     def __repr__(self):
         return f'{self.player_info["first_name"]} {self.player_info["last_name"]}: ' + \
-               f'{self.player_info["on_base_percent"]} OBP, {self.player_info["slg_percent"]} SLG, {self.player_info["on_base_plus_slg"]} OPS'
+               f'{self.player_info["on_base_plus_slg"]} OPS, {self.player_info["woba"]} WOBA'
+
+Player.set_col_names('stats.csv')
