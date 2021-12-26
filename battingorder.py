@@ -1,8 +1,17 @@
 '''
     File: battingorder.py
-    Author: Drew Scott
-    Description: Uses a lineup of 9 players  and simulates all possible batting orders, determining which results in
-        the most average runs per 9 innings. Prints out summary statistics for the simulation.
+    Author: Drew Scott, 2021
+    Description: 
+        Simulates every possible batting order for a given lineup and displays summary statistics of the average runs (over a number of games) of the
+        orders, and specific information about the top and bottom 5 orders. The user may choose how many games each order is simulated for, which
+        players are in the lineup, or what each player's PA outcomes are in a single game (see sample files).
+    Major TODOs:
+        1) Determine the accurate likelihoods of sacrifices and double plays for different out types (ground, fly, etc.)
+        2) Enable some sort of pinch hitting scheme (right now, each player hits for the entire game)
+        3) Enable some sort of pitcher dependent hitting results (even as simple as right-y/left-y; right now hitting stats are full season aggregates)
+        4) Include edge cases like stealing, wild pitches, etc.
+        5) More detailed data (i.e. did a double go to right or left field?)
+        6) Player specific data (i.e. how often does a player try to steal?)
     Usage:
         For a random lineup:
             python3 battingorder.py -n <simulations_per_order>
@@ -142,9 +151,9 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int, order:Lis
 
 def sim_order(order:List[int], per_order:int, lineup:Lineup) -> float:
     '''
-        Simulates per_order games for each order
-        Parallelized using imap
+        Simulates per_order games for the given order
     '''
+
     tot_runs_order = 0
     for game_num in range(per_order):
         leadoff = 0
@@ -159,13 +168,14 @@ def sim_order(order:List[int], per_order:int, lineup:Lineup) -> float:
 
     return avg_runs_order
 
-def run_sim(lineup:Lineup, per_order:int = 1) -> None:
+def run_sim(lineup:Lineup, per_order:int) -> None:
     '''
         Simulates per_order games for each possible batting order
     '''
 
     orders = list(itertools.permutations([i for i in range(9)]))
-    # run the simulation with the at bat outcomes
+
+    # run the simulation
     pool = Pool(10)
     avg_runs_per_order = list(tqdm.tqdm( \
         pool.imap(partial(sim_order, per_order=per_order, lineup=lineup), orders), \
@@ -182,16 +192,23 @@ def run_sim(lineup:Lineup, per_order:int = 1) -> None:
     worst_runs = min(avg_runs_per_order)
     avg_runs = mean(avg_runs_per_order)
 
-    print(f'Total games simulated: {len(orders) * per_order:,}')
+    # print results
+    print(f'\nTotal games simulated: {len(orders) * per_order:,}')
     print(f'Games simulated per order: {per_order:,}')
     print(f'Total orders simulated: {len(orders):,}')
     print()
     print(f'Max runs for sim: {best_runs}')
     print(f'Avg. runs for sim: {avg_runs:.2f}')
-    print(f'Min runs for sim: {worst_runs}')
-    print()
+    print(f'Min runs for sim: {worst_runs}\n')
 
-    print(f'Top 5 batting orders:')
+    # TODO: only do this when user specifies lineup
+    if True:
+        print(f'Order of interest:')
+        print(f'Average runs for order: {avg_runs_per_order[0]}')
+        for i, ind in enumerate(orders[0]):
+            print(f'\t{str(i+1)}) {str(lineup.players[ind])}')
+
+    print(f'\nTop 5 batting orders:')
     for rank in range(len(best_five)):
         order = orders[best_five[rank][1]] 
         print(f'{str(rank+1)}) Average runs for order: {best_five[rank][0]}')
@@ -216,8 +233,6 @@ def get_nine(total_count : int) -> List[int]:
     while len(nine) < 9:
         r = random.randint(0, total_count - 1)
 
-        if r not in nine:
-            nine.append(r)
 
     return nine
 
@@ -232,6 +247,7 @@ def get_lineup(lineup_filename:str) -> Lineup:
                 first, last = line.split()
                 player_names.append(f'{last},{first}')
 
+        players = [None] * 9
         # read the player data from master file
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
             col_names = stats_csv.readline().strip()[:-1].split(',')
@@ -241,8 +257,10 @@ def get_lineup(lineup_filename:str) -> Lineup:
                 name = line[ : second_comma + first_comma + 1]
 
                 if name in player_names:
-                    lineup.add_player(Player(line))            
+                    players[player_names.index(name)] = Player(line)
 
+            for player in players:
+                lineup.add_player(player)
     else:
         # get all of the players
         players = []
@@ -311,7 +329,7 @@ if __name__ == '__main__':
     lineup.set_pa_outcomes(outcome_filename, sims_per_order)
 
     # set per_order to be the number of simulations to run per order
-    run_sim(lineup, per_order=sims_per_order)
+    run_sim(lineup, sims_per_order)
 
     end = timeit.default_timer()
     seconds = int(end - start)
