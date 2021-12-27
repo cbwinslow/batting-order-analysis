@@ -20,15 +20,6 @@ class Player:
 
     @classmethod
     def set_metadata(cls, stats_filename:str) -> None:
-        # remove all spaces, weird baseball savant thing
-        with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
-            new_content = ''
-            for line in stats_csv:
-                updated_line = line.replace(' ', '') 
-                new_content += updated_line
-        with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
-            stats_csv.write(new_content)
-
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
             # get all of the column names
             cls.col_names = stats_csv.readline().split(',')

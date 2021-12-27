@@ -35,7 +35,7 @@ from statistics import mean
 import tqdm
 import heapq
 
-def new_batter(cur_batter : int, thru_order:int) -> int:
+def new_batter(cur_batter:int, thru_order:int) -> int:
     '''
         Returns the index of the next batter
     '''
@@ -44,21 +44,26 @@ def new_batter(cur_batter : int, thru_order:int) -> int:
 
     return cur_batter + 1, thru_order
 
-def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int, order:List[int]) -> Tuple[int, int]:
+def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[int], lineup:Lineup) -> Tuple[int, int]:
     '''
         Simulates an inning of play
         Returns the number of runs scored in the inning and what batter will lead off the next inning
     '''
 
     runs = 0
+    outs = 0
+    runners = [None, None, None]
+
     cur_batter_pos = leadoff
     cur_batter = order[cur_batter_pos]
-    runners = [False, False, False]
-    outs = 0
+    cur_player = lineup.players[cur_batter]
 
     while outs < 3:
         # there aren't enough outcomes for this batter, so guarantee an out
-        # TODO: actually simulate AB
+
+        # TODO: simulate stealing
+
+        # TODO: actually simulate PA
         if len(generated_outcomes[cur_batter]) <= thru_order:
             outs += 1
             cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
@@ -66,10 +71,11 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int, order:Lis
             continue 
 
         outcome = generated_outcomes[cur_batter][thru_order]
+        # TODO: choose direction
 
         if outcome[:5] == 'b_out' or outcome == 'b_strikeout':
-            # out, need to account for potential sacrficies on fly and ground outs
-            # and double/triple plays
+            # out
+            # need to account for sacrficies and double/triple plays
             outs += 1
             if outs == 3:
                 # end of inning, no sacs possible
@@ -80,70 +86,71 @@ def sim_inning(generated_outcomes:dict, leadoff : int, thru_order:int, order:Lis
                 third_scores = 0.2
                 second_advances = 0.1
                 r = random.random()
-                if r < third_scores and runners[2] == True:
+                if r < third_scores and runners[2] is not None:
                     runs += 1
-                    runners = [runners[0], runners[1], False]
+                    runners = [runners[0], runners[1], None]
 
-                if r < second_advances and runners[1] == True:
-                    runners = [runners[0], False, True]
+                if r < second_advances and runners[1] is not None:
+                    runners = [runners[0], None, runners[1]]
 
             elif outcome == 'b_out_ground':
                 sac_rate = 0.001
                 double_play_rate = 0.3
 
                 if random.random() < sac_rate:
-                    runs += int(runners[2])
-                    runners = [False, runners[0], runners[1]]
+                    runs += int(runners[2] is not None)
+                    runners = [None, runners[0], runners[1]]
                 elif random.random() < double_play_rate:
-                    outs += int(runners[0])
-                    runners = [False, runners[1], runners[2]]
+                    outs += int(runners[0] is not None)
+                    runners = [None, runners[1], runners[2]]
 
                     if outs >= 3:
                         break
 
         elif outcome == 'b_walk' or outcome == 'b_catcher_interf' or outcome == 'b_hit_by_pitch':
             # right now treating all these the same, just cascade runner advancements along starting with the batter
-            if runners[0] == True:
-                if runners[1] == True:
-                    if runners[2] == True:
+            if runners[0] is not None:
+                if runners[1] is not None:
+                    if runners[2] is not None:
                         # runners on first, second, and third
                         runs += 1
-                        runners = [True, True, True]
+                        runners = [cur_player, runners[0], runners[1]]
 
                     else:
                         # runners on first and second
-                        runners = [True, True, True]
+                        runners = [cur_player, runners[0], runners[1]]
                 else:
-                    # runner on first
-                    runners = [True, True, runners[2]]
+                    # runner on first, maybe third
+                    runners = [cur_player, runners[0], runners[2]]
             else:
                 # no runner on first
-                runners = [True, runners[1], runners[2]]
+                runners = [cur_player, runners[1], runners[2]]
 
         elif outcome == 'b_single':
             # on a single, runners on second and third score, and runner on first goes to second
-            runs += sum(runners[1:])
-            runners = [True, runners[0], False]
+            runs += int(runners[1] is not None) + int(runners[2] is not None)
+            runners = [cur_player, runners[0], None]
 
         elif outcome == 'b_double':
             # on a double, a runner on first advances to third, batter to second, and others advance home
-            runs += sum(runners[1:])
-            runners = [False, True, runners[0]]
+            runs += int(runners[1] is not None) + int(runners[2] is not None)
+            runners = [None, cur_player, runners[0]]
 
         elif outcome == 'b_triple':
             # all runners score, batter to third
-            runs += sum(runners)
-            runners = [False, False, True]
+            runs += int(runners[1] is not None) + int(runners[2] is not None) + int(runners[3] is not None)
+            runners = [None, None, cur_player]
 
         elif outcome == 'b_home_run':
             # all runners and batter score
-            runs += sum(runners) + 1
-            runners = [False, False, False]
+            runs += int(runners[1] is not None) + int(runners[2] is not None) + int(runners[3] is not None) + 1
+            runners = [None, None, None]
         else:
             raise Exception(f"Invalid outcome name: {outcome}")
 
         cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
         cur_batter = order[cur_batter_pos]
+        cur_player = lineup.players[cur_batter]
 
     cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
 
@@ -160,7 +167,7 @@ def sim_order(order:List[int], per_order:int, lineup:Lineup) -> float:
         thru_order = 0
         game_outcomes = lineup.game_outcomes[game_num]
         for inning in range(9):
-            runs, leadoff, thru_order = sim_inning(game_outcomes, leadoff, thru_order, order)
+            runs, leadoff, thru_order = sim_inning(game_outcomes, leadoff, thru_order, order, lineup)
 
             tot_runs_order += runs
 
