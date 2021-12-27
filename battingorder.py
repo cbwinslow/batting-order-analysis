@@ -1,7 +1,7 @@
 '''
     File: battingorder.py
     Author: Drew Scott, 2021
-    Description: 
+    Description:
         Simulates every possible batting order for a given lineup and displays summary statistics of the average runs (over a number of games) of the
         orders, and specific information about the top and bottom 5 orders. The user may choose how many games each order is simulated for, which
         players are in the lineup, or what each player's PA outcomes are in a single game (see sample files).
@@ -23,19 +23,19 @@
 
 from Lineup import Lineup, Player
 
+import timeit
+import tqdm # type: ignore
+from statistics import mean
+import heapq
+from typing import List, Tuple, Optional
+
 import random
-from typing import List, Tuple
 import itertools
 import sys
-import math
-import timeit
 from multiprocessing import Pool
 from functools import partial
-from statistics import mean
-import tqdm
-import heapq
 
-def new_batter(cur_batter:int, thru_order:int) -> int:
+def new_batter(cur_batter:int, thru_order:int) -> Tuple[int, int]:
     '''
         Returns the index of the next batter
     '''
@@ -44,7 +44,7 @@ def new_batter(cur_batter:int, thru_order:int) -> int:
 
     return cur_batter + 1, thru_order
 
-def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[int], lineup:Lineup) -> Tuple[int, int]:
+def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[int], lineup:Lineup) -> Tuple[int, int, int]:
     '''
         Simulates an inning of play
         Returns the number of runs scored in the inning and what batter will lead off the next inning
@@ -67,7 +67,7 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
             outs += 1
             cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
             cur_batter = order[cur_batter_pos]
-            continue 
+            continue
 
         outcome, direction = generated_outcomes[cur_batter][thru_order]
 
@@ -129,7 +129,7 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
             else:
                 # no runner on first
                 runners = [cur_player, runners[1], runners[2]]
-        
+
         # TODO: account for direction on hits for base runner advancements
         elif outcome == 'b_single':
             # on a single, runners on second and third score, and runner on first goes to second
@@ -199,7 +199,7 @@ def run_sim(lineup:Lineup, per_order:int) -> None:
     avg_runs_indexes = [(runs, i) for i, runs in enumerate(avg_runs_per_order)]
     best_five = heapq.nlargest(5, avg_runs_indexes)
     worst_five = heapq.nsmallest(5, avg_runs_indexes)
-   
+
     best_runs = max(avg_runs_per_order)
     worst_runs = min(avg_runs_per_order)
     avg_runs = mean(avg_runs_per_order)
@@ -222,7 +222,7 @@ def run_sim(lineup:Lineup, per_order:int) -> None:
 
     print(f'\nTop 5 batting orders:')
     for rank in range(len(best_five)):
-        order = orders[best_five[rank][1]] 
+        order = orders[best_five[rank][1]]
         print(f'{str(rank+1)}) Average runs for order: {best_five[rank][0]}')
         for i, ind in enumerate(order):
             print(f'\t{str(lineup.players[ind])}')
@@ -230,7 +230,7 @@ def run_sim(lineup:Lineup, per_order:int) -> None:
 
     print(f'Bottom 5 batting orders:')
     for rank in range(len(worst_five)-1, -1, -1):
-        order = orders[worst_five[rank][1]] 
+        order = orders[worst_five[rank][1]]
         print(f'{str(len(orders) - rank)}) Average runs for order: {worst_five[rank][0]}')
         for i, ind in enumerate(order):
             print(f'\t{str(lineup.players[ind])}')
@@ -240,11 +240,12 @@ def get_nine(total_count : int) -> List[int]:
     '''
         Returns a list of length 9 with unique indexes in the range of total_count
     '''
-    nine = []
+    nine: List[int] = []
 
     while len(nine) < 9:
         r = random.randint(0, total_count - 1)
-
+        if r not in nine:
+            nine.append(r)
 
     return nine
 
@@ -259,7 +260,7 @@ def get_lineup(lineup_filename:str) -> Lineup:
                 first, last = line.split()
                 player_names.append(f'{last},{first}')
 
-        players = [None] * 9
+        players: List[Optional[Player]] = [None] * 9
         # read the player data from master file
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
             col_names = stats_csv.readline().strip()[:-1].split(',')
@@ -281,7 +282,7 @@ def get_lineup(lineup_filename:str) -> Lineup:
                 players.append(Player(line))
 
             # select 9 random players to run the sim
-            player_indexes = get_nine(len(ratios))
+            player_indexes = get_nine(len(players))
             for index in player_indexes:
                 lineup.add_player(players[index])
 
@@ -316,6 +317,13 @@ def parse_arguments(args):
 
     return lineup_filename, outcome_filename, sims_per_order
 
+def display_time(start:float, end:float) -> None:
+    seconds = int(end - start)
+    hours = seconds // 3600
+    minutes = (seconds - (hours * 3600)) // 60
+    seconds = seconds - (hours * 3600) - (minutes * 60)
+    print(f'Total time: {hours}:{minutes:02d}:{seconds:02d}')
+
 if __name__ == '__main__':
     start = timeit.default_timer()
 
@@ -331,12 +339,7 @@ if __name__ == '__main__':
         print(player)
     print()
 
-    # set per_order to be the number of simulations to run per order
     run_sim(lineup, sims_per_order)
 
     end = timeit.default_timer()
-    seconds = int(end - start)
-    hours = seconds // 3600
-    minutes = (seconds - (hours * 3600)) // 60
-    seconds = seconds - (hours * 3600) - (minutes * 60)
-    print(f'Total time: {hours}:{minutes:02d}:{seconds:02d}')
+    display_time(start, end)

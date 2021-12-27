@@ -6,18 +6,23 @@
 
 from Player import Player
 
+from typing import Optional
+
 class Lineup:
     def __init__(self):
-        self.players = []
+        self.players: List[Player] = []
         self.game_outcomes = []
 
-    def add_player(self, player:Player) -> None:
+    def add_player(self, player: Optional[Player]) -> None:
         '''
             Adds a player to the lineup
         '''
+        if player is None:
+            raise Exception('Player was None')
+
         self.players.append(player)
     
-    def get_player(self, first_name:str, last_name:str) -> Player:
+    def get_player(self, first_name: str, last_name: str) -> Player:
         '''
             Returns the player in the lineup who matches first and last name
         '''
@@ -25,7 +30,7 @@ class Lineup:
             if player.player_info['first_name'] == first_name and player.player_info['last_name'] == last_name:
                 return player
 
-        return None
+        raise Exception(f'Player {first_name} {last_name} not found from PA outcome file')
 
     def set_pa_outcomes(self, outcome_filename:str, sims_per_order:int) -> None:
         '''
@@ -42,8 +47,6 @@ class Lineup:
                 for line in outcome_f:
                     first_name, last_name = line.split(':')[0].split()
                     player = self.get_player(first_name, last_name) 
-                    if player is None:
-                        raise Exception(f'Player {first_name} {last_name} not found from PA outcome file')
 
                     player.set_pa_outcomes(line.split(':')[1][:-1].split(','))
 

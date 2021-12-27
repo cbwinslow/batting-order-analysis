@@ -5,19 +5,22 @@
 '''
 
 import random
-from typing import List
+from typing import List, Tuple
 
 class Player:
+    col_names: List[str] = []
+    max_name_length: int = 0
+
     pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', \
                         'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
 
     directions = ['pull_percent', 'straightaway_percent', 'opposite_percent']
 
     def __init__(self, stat_line: str):
-        self.player_info = self.get_info(stat_line)
-        self.player_pa_probs = self.get_pa_probs(self.player_info)
-        self.player_pa_thresholds = self.get_pa_thresholds()
-        self.pa_outcomes = None
+        self.player_info: dict = self.get_info(stat_line)
+        self.player_pa_probs: dict = self.get_pa_probs(self.player_info)
+        self.player_pa_thresholds: List[float] = self.get_pa_thresholds()
+        self.pa_outcomes: List[List[Tuple[str, str]]] = []
 
     @classmethod
     def set_metadata(cls, stats_filename:str) -> None:
@@ -127,17 +130,14 @@ class Player:
 
         return probs
 
-
-    
-
     def get_info(self, stats_line:str) -> dict:
         '''
             Returns a dict of all of the player's information
         '''
         d = {}
 
-        stats_line = stats_line[: -1].split(',')
-        stats = [int(s) if s.isnumeric() else float(s) if isfloat(s) else s for s in stats_line]
+        stats_splits = stats_line[: -1].split(',')
+        stats = [int(s) if s.isnumeric() else float(s) if isfloat(s) else s for s in stats_splits]
 
         for col, stat in zip(Player.col_names, stats):
             d[col] = stat
