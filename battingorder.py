@@ -59,19 +59,17 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
     cur_player = lineup.players[cur_batter]
 
     while outs < 3:
+        # TODO: simulate stealing and other mid-PA events
+
         # there aren't enough outcomes for this batter, so guarantee an out
-
-        # TODO: simulate stealing
-
-        # TODO: actually simulate PA
+        # TODO: actually simulate PA -- should do this in Player class so it holds constant across simulations
         if len(generated_outcomes[cur_batter]) <= thru_order:
             outs += 1
             cur_batter_pos, thru_order = new_batter(cur_batter_pos, thru_order)
             cur_batter = order[cur_batter_pos]
             continue 
 
-        outcome = generated_outcomes[cur_batter][thru_order]
-        # TODO: choose direction
+        outcome, direction = generated_outcomes[cur_batter][thru_order]
 
         if outcome[:5] == 'b_out' or outcome == 'b_strikeout':
             # out
@@ -81,16 +79,22 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
                 # end of inning, no sacs possible
                 break
 
-            # TODO: tweak rates
+            # TODO: actually find rates
             if outcome == 'b_out_fly':
+                # sacrifice rates
                 third_scores = 0.2
-                second_advances = 0.1
+                second_advances = 0.15
+                if direction == 'R':
+                    second_advances = 0.3
+                elif direction == 'L':
+                    second_advances = 0.05
+
                 r = random.random()
                 if r < third_scores and runners[2] is not None:
                     runs += 1
                     runners = [runners[0], runners[1], None]
 
-                if r < second_advances and runners[1] is not None:
+                if r < second_advances and runners[1] is not None and runners[2] is None:
                     runners = [runners[0], None, runners[1]]
 
             elif outcome == 'b_out_ground':
@@ -125,7 +129,8 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
             else:
                 # no runner on first
                 runners = [cur_player, runners[1], runners[2]]
-
+        
+        # TODO: account for direction on hits for base runner advancements
         elif outcome == 'b_single':
             # on a single, runners on second and third score, and runner on first goes to second
             runs += int(runners[1] is not None) + int(runners[2] is not None)
@@ -138,12 +143,12 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
 
         elif outcome == 'b_triple':
             # all runners score, batter to third
-            runs += int(runners[1] is not None) + int(runners[2] is not None) + int(runners[3] is not None)
+            runs += int(runners[0] is not None) + int(runners[1] is not None) + int(runners[2] is not None)
             runners = [None, None, cur_player]
 
         elif outcome == 'b_home_run':
             # all runners and batter score
-            runs += int(runners[1] is not None) + int(runners[2] is not None) + int(runners[3] is not None) + 1
+            runs += int(runners[0] is not None) + int(runners[1] is not None) + int(runners[2] is not None) + 1
             runners = [None, None, None]
         else:
             raise Exception(f"Invalid outcome name: {outcome}")
@@ -259,9 +264,8 @@ def get_lineup(lineup_filename:str) -> Lineup:
         with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
             col_names = stats_csv.readline().strip()[:-1].split(',')
             for line in stats_csv:
-                first_comma = line.index(',')
-                second_comma = line[first_comma + 1: ].index(',')
-                name = line[ : second_comma + first_comma + 1]
+                splits = line.split(',')
+                name = splits[0] + ',' + splits[1]
 
                 if name in player_names:
                     players[player_names.index(name)] = Player(line)
@@ -316,7 +320,6 @@ if __name__ == '__main__':
     start = timeit.default_timer()
 
     Player.set_metadata('stats.csv')
-    players = []
 
     lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
 

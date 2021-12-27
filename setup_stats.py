@@ -2,9 +2,10 @@
     File: setup_stats.py
     Author: Drew Scott
     Description: Sets up stats.csv: a) removes Baseball Savant's formatted spaces and b) add R/L batting splits for each player
-    Usage: python3 setup_stats.py
+    Usage: python3 setup_stats.py <-ds if only deleting spaces>
 '''
 
+import sys
 from typing import Tuple
 from bs4 import BeautifulSoup
 import requests
@@ -40,25 +41,33 @@ if __name__ == '__main__':
     # put left and right hitting pct for each player
     updated_content = ''
 
+    only_ds = False
+    if '-ds' in sys.argv:
+        only_ds = True
+
     with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
         col_names = stats_csv.readline()[:-1]
+        col_names = col_names.replace(' ', '')
         col_names += 'bats_right_pct,bats_left_pct,\n'
         updated_content += col_names
 
         for i, line in enumerate(stats_csv):
-            print(f'{i+1}/556   ', end='\r')
             # remove spaces
             updated_line = line.replace(' ', '')
 
-            # get batting side info
-            playerid = get_playerid(updated_line)
+            if not only_ds:
+                print(f'{i+1}/556   ', end='\r')
+                # get batting side info
+                playerid = get_playerid(updated_line)
 
-            right, left = get_rl_splits(playerid)
-            updated_line = f'{updated_line[:-1]}{right},{left},\n'
+                right, left = get_rl_splits(playerid)
+                updated_line = f'{updated_line[:-1]}{right},{left},\n'
 
             updated_content += updated_line
 
     # write the new content back out
     with open('stats.csv', 'w', encoding='utf-8-sig') as stats_csv:
         stats_csv.write(updated_content)
-    print()
+
+    if not only_ds:
+        print()
