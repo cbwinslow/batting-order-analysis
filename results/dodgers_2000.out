@@ -1,0 +1,146 @@
+Players:
+Walker Buehler:		0.277 OPS, 0.14 WOBA
+Cody Bellinger:		0.542 OPS, 0.237 WOBA
+Mookie Betts:		0.854 OPS, 0.365 WOBA
+Corey Seager:		0.915 OPS, 0.389 WOBA
+Will Smith:		0.86 OPS, 0.364 WOBA
+Max Muncy:		0.895 OPS, 0.379 WOBA
+AJ Pollock:		0.892 OPS, 0.375 WOBA
+Trea Turner:		0.911 OPS, 0.386 WOBA
+Justin Turner:		0.832 OPS, 0.358 WOBA
+
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 362880/362880 [9:48:05<00:00, 10.28it/s]
+
+Total games simulated: 725,760,000
+Games simulated per order: 2,000
+Total orders simulated: 362,880
+
+Max runs for sim: 4.8
+Avg. runs for sim: 4.56
+Min runs for sim: 4.3455
+
+Order of interest:
+Average runs for order: 4.5455
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+
+Top 5 batting orders:
+1) Average runs for order: 4.8
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+
+2) Average runs for order: 4.798
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+
+3) Average runs for order: 4.7965
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+
+4) Average runs for order: 4.7945
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+
+5) Average runs for order: 4.793
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+
+Bottom 5 batting orders:
+362876) Average runs for order: 4.3635
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+
+362877) Average runs for order: 4.3635
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+
+362878) Average runs for order: 4.3595
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+
+362879) Average runs for order: 4.353
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+
+362880) Average runs for order: 4.3455
+	Walker Buehler:		0.277 OPS, 0.14 WOBA
+	AJ Pollock:		0.892 OPS, 0.375 WOBA
+	Corey Seager:		0.915 OPS, 0.389 WOBA
+	Will Smith:		0.86 OPS, 0.364 WOBA
+	Cody Bellinger:		0.542 OPS, 0.237 WOBA
+	Mookie Betts:		0.854 OPS, 0.365 WOBA
+	Justin Turner:		0.832 OPS, 0.358 WOBA
+	Trea Turner:		0.911 OPS, 0.386 WOBA
+	Max Muncy:		0.895 OPS, 0.379 WOBA
+
+Total time: 9:48:05
