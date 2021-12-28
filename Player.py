@@ -5,11 +5,13 @@
 '''
 
 import random
+import math
 from typing import List, Tuple
 
 class Player:
     col_names: List[str] = []
     max_name_length: int = 0
+    outcome_num_map = {}
 
     pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', \
                         'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
@@ -36,13 +38,16 @@ class Player:
                 
                 cls.max_name_length = max(cls.max_name_length, last_length + first_length + 1)
 
+        for i, outcome in enumerate(cls.pa_outcome_names):
+            cls.outcome_num_map[outcome] = i
+
     def set_pa_outcomes(self, pa_outcomes:List[str]) -> None:
         '''
             Sets pa_outcomes to the given outcomes (used when simulating a single game with pre-determined outcomes
         '''
         # TODO: do direction better
         # all outcomes go to center
-        self.pa_outcomes = [[(outcome, 'C') for outcome in pa_outcomes]] 
+        self.pa_outcomes = [[self.full_outcome_to_num(outcome, 'C') for outcome in pa_outcomes]] 
     
     def get_pa_outcome(self) -> str:
         '''
@@ -57,7 +62,7 @@ class Player:
 
     def get_outcome_direction(self) -> str:
         # determine which relative direction the outcome was
-        direction_num = random.random()
+        direction_num = random.random() * 100
         relative_direction = Player.directions[2]
         if direction_num < self.player_info[Player.directions[0]]:
             relative_direction = Player.directions[0]
@@ -95,11 +100,27 @@ class Player:
                 # generate a direction, even if it's not possible (like a strikeout) since it will be ignored
                 direction = self.get_outcome_direction()
 
-                game_outcomes.append((outcome,direction))
+                game_outcomes.append(self.full_outcome_to_num(outcome, direction))
 
             generated_outcomes.append(game_outcomes)
         
         self.pa_outcomes = generated_outcomes
+
+    def full_outcome_to_num(self, outcome: str, direction: str) -> int:
+        num = 0
+
+        outcome_bits = math.ceil(math.log(len(Player.pa_outcome_names), 2))
+        outcome_num = Player.outcome_num_map[outcome]
+
+        direction_num = 0
+        if direction == 'C':
+            direction_num = 1
+        elif direction == 'R':
+            direction_num = 2
+
+        num = (outcome_num << 2) + direction_num
+        
+        return num
 
     def get_pa_thresholds(self) -> List[float]:
         '''

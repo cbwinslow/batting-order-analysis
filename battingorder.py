@@ -35,6 +35,13 @@ import sys
 from multiprocessing import Pool
 from functools import partial
 
+# TODO: global this or something so not in two places
+pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', \
+                    'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
+outcome_num_map = {}
+for i, outcome in enumerate(pa_outcome_names):
+            outcome_num_map[outcome] = i
+
 def new_batter(cur_batter:int, thru_order:int) -> Tuple[int, int]:
     '''
         Returns the index of the next batter
@@ -69,10 +76,12 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
             cur_batter = order[cur_batter_pos]
             continue
 
-        outcome, direction = generated_outcomes[cur_batter][thru_order]
+        outcome = generated_outcomes[cur_batter][thru_order]
 
-        if outcome[:5] == 'b_out' or outcome == 'b_strikeout':
-            # out
+        # TODO: make it so the bit shifting can handle changes to outcomes and how much info is encoded in outcome int
+        if (outcome >= 8 << 2 and outcome < 12 << 2) or (outcome >= 4 << 2 and outcome < 5 << 2):
+            # out on fly, ground, ld, or popup or strikeout
+
             # need to account for sacrficies and double/triple plays
             outs += 1
             if outs == 3:
@@ -84,9 +93,11 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
                 # sacrifice rates
                 third_scores = 0.2
                 second_advances = 0.15
-                if direction == 'R':
+                if outcome & 0b11 == 2:
+                    # hit to right
                     second_advances = 0.3
-                elif direction == 'L':
+                elif outcome & 0b11 == 0:
+                    # hit to left
                     second_advances = 0.05
 
                 r = random.random()
@@ -111,7 +122,8 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
                     if outs >= 3:
                         break
 
-        elif outcome == 'b_walk' or outcome == 'b_catcher_interf' or outcome == 'b_hit_by_pitch':
+        elif outcome >= 5 << 2 and outcome < 8 << 2:
+            # walk, catcher interference, or hbp
             # right now treating all these the same, just cascade runner advancements along starting with the batter
             if runners[0] is not None:
                 if runners[1] is not None:
@@ -131,22 +143,22 @@ def sim_inning(generated_outcomes:dict, leadoff:int, thru_order:int, order:List[
                 runners = [cur_player, runners[1], runners[2]]
 
         # TODO: account for direction on hits for base runner advancements
-        elif outcome == 'b_single':
+        elif outcome >= 0 << 2 and outcome < 1 << 2:
             # on a single, runners on second and third score, and runner on first goes to second
             runs += int(runners[1] is not None) + int(runners[2] is not None)
             runners = [cur_player, runners[0], None]
 
-        elif outcome == 'b_double':
+        elif outcome >= 1 << 2 and outcome < 2 << 2:
             # on a double, a runner on first advances to third, batter to second, and others advance home
             runs += int(runners[1] is not None) + int(runners[2] is not None)
             runners = [None, cur_player, runners[0]]
 
-        elif outcome == 'b_triple':
+        elif outcome >= 2 << 2 and outcome < 3 << 2:
             # all runners score, batter to third
             runs += int(runners[0] is not None) + int(runners[1] is not None) + int(runners[2] is not None)
             runners = [None, None, cur_player]
 
-        elif outcome == 'b_home_run':
+        elif outcome >= 3 << 2 and outcome < 4 << 2:
             # all runners and batter score
             runs += int(runners[0] is not None) + int(runners[1] is not None) + int(runners[2] is not None) + 1
             runners = [None, None, None]
