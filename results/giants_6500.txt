@@ -1,0 +1,146 @@
+Players:
+Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+Brandon Crawford:	0.895 OPS, 0.377 WOBA
+Evan Longoria:		0.833 OPS, 0.352 WOBA
+Logan Webb:		0.434 OPS, 0.192 WOBA
+Kris Bryant:		0.835 OPS, 0.356 WOBA
+Tommy LaStella:		0.71 OPS, 0.307 WOBA
+Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+Wilmer Flores:		0.782 OPS, 0.337 WOBA
+Darin Ruf:		0.904 OPS, 0.384 WOBA
+
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 362880/362880 [16:34:13<00:00,  6.08it/s]
+
+Total games simulated: 2,358,720,000
+Games simulated per order: 6,500
+Total orders simulated: 362,880
+
+Max runs for sim: 5.004153846153846
+Avg. runs for sim: 4.85
+Min runs for sim: 4.6913846153846155
+
+Order of interest:
+Average runs for order: 4.821538461538461
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+
+Top 5 batting orders:
+1) Average runs for order: 5.004153846153846
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+
+2) Average runs for order: 5.001230769230769
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+
+3) Average runs for order: 5.001076923076923
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+
+4) Average runs for order: 5.00076923076923
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+
+5) Average runs for order: 4.999846153846154
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+
+Bottom 5 batting orders:
+362876) Average runs for order: 4.701076923076923
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+
+362877) Average runs for order: 4.700461538461538
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+
+362878) Average runs for order: 4.696923076923077
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+
+362879) Average runs for order: 4.696307692307692
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+
+362880) Average runs for order: 4.6913846153846155
+	Logan Webb:		0.434 OPS, 0.192 WOBA
+	Kris Bryant:		0.835 OPS, 0.356 WOBA
+	Brandon Crawford:	0.895 OPS, 0.377 WOBA
+	Tommy LaStella:		0.71 OPS, 0.307 WOBA
+	Mike Yastrzemski:	0.767 OPS, 0.326 WOBA
+	Wilmer Flores:		0.782 OPS, 0.337 WOBA
+	Evan Longoria:		0.833 OPS, 0.352 WOBA
+	Darin Ruf:		0.904 OPS, 0.384 WOBA
+	Buster PoseyIII:	0.889 OPS, 0.379 WOBA
+
+Total time: 16:34:14
