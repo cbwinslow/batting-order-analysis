@@ -13,7 +13,7 @@ from multiprocessing import Pool
 from functools import partial
 import tqdm # type: ignore
 
-from lineup import Lineup
+from .lineup import Lineup
 
 class Simulation:
     '''
