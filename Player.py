@@ -1,54 +1,63 @@
 '''
     File: Lineup.py
     Author: Drew Scott
-    Description: Implementation of a class to store the relevant information and statistics about a player.
+    Description: Implementation of a class to store information and statistics about a player.
 '''
 
 import random
-import math
-from typing import List, Tuple
+from typing import List, Dict
 
 class Player:
+    '''
+        TODO
+    '''
+
     col_names: List[str] = []
     max_name_length: int = 0
-    outcome_num_map = {}
+    outcome_num_map: Dict[str, int] = {}
 
-    pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk','b_catcher_interf', 'b_hit_by_pitch', \
-                        'b_out_fly', 'b_out_ground', 'b_out_line_drive', 'b_out_popup']
+    pa_outcome_names = ['b_single', 'b_double', 'b_triple', 'b_home_run', 'b_strikeout', 'b_walk', \
+                        'b_catcher_interf', 'b_hit_by_pitch', 'b_out_fly', 'b_out_ground', \
+                        'b_out_line_drive', 'b_out_popup']
 
     directions = ['pull_percent', 'straightaway_percent', 'opposite_percent']
 
     def __init__(self, stat_line: str):
-        self.player_info: dict = self.get_info(stat_line)
-        self.player_pa_probs: dict = self.get_pa_probs(self.player_info)
+        self.player_info: dict = Player.get_info(stat_line)
+        self.player_pa_probs: dict = self.get_pa_probs()
         self.player_pa_thresholds: List[float] = self.get_pa_thresholds()
-        self.pa_outcomes: List[List[Tuple[str, str]]] = []
+        self.pa_outcomes: List[List[int]] = []
 
     @classmethod
-    def set_metadata(cls, stats_filename:str) -> None:
-        with open('stats.csv', 'r', encoding='utf-8-sig') as stats_csv:
+    def set_metadata(cls, stats_filename: str) -> None:
+        '''
+            TODO
+        '''
+
+        with open(stats_filename, 'r', encoding='utf-8-sig') as stats_csv:
             # get all of the column names
             cls.col_names = stats_csv.readline().split(',')
-           
-            # get the maximum name length 
+
+            # get the maximum name length
             cls.max_name_length = 0
             for line in stats_csv:
                 last_length = line.index(',')
                 first_length = line[last_length+1:].index(',')
-                
+
                 cls.max_name_length = max(cls.max_name_length, last_length + first_length + 1)
 
         for i, outcome in enumerate(cls.pa_outcome_names):
             cls.outcome_num_map[outcome] = i
 
-    def set_pa_outcomes(self, pa_outcomes:List[str]) -> None:
+    def set_pa_outcomes(self, pa_outcomes: List[str]) -> None:
         '''
-            Sets pa_outcomes to the given outcomes (used when simulating a single game with pre-determined outcomes
+            Sets pa_outcomes to the given outcomes
+            (used when simulating a single game with pre-determined outcomes
         '''
         # TODO: do direction better
         # all outcomes go to center
-        self.pa_outcomes = [[self.full_outcome_to_num(outcome, 'C') for outcome in pa_outcomes]] 
-    
+        self.pa_outcomes = [[self.full_outcome_to_num(outcome, 'C') for outcome in pa_outcomes]]
+
     def get_pa_outcome(self) -> str:
         '''
             Returns the name of the plate appearance outcome based on a randomly generated number
@@ -61,33 +70,39 @@ class Player:
         return Player.pa_outcome_names[-1]
 
     def get_outcome_direction(self) -> str:
+        '''
+            TODO
+        '''
+
         # determine which relative direction the outcome was
+        # TODO: make better
         direction_num = random.random() * 100
         relative_direction = Player.directions[2]
         if direction_num < self.player_info[Player.directions[0]]:
             relative_direction = Player.directions[0]
-        elif direction_num < self.player_info[Player.directions[0]] + self.player_info[Player.directions[1]]:
-            relative_direction = Player.directions[1] 
+        elif direction_num < self.player_info[Player.directions[0]] + \
+                self.player_info[Player.directions[1]]:
+            relative_direction = Player.directions[1]
 
         # TODO: get pitcher info
         # assume pitcher is a righty, so anyone who switch hits will be lefty
-        batter_side = 'R' 
+        batter_side = 'R'
         if self.player_info['bats_left_pct'] > 0:
-            batter_side = 'L' 
-   
-        # turn relative direction into true direction 
-        true_direction = 'C' 
+            batter_side = 'L'
+
+        # turn relative direction into true direction
+        true_direction = 'C'
         if relative_direction == 'pull_percent':
             if batter_side == 'R':
-                true_direction = 'L' 
+                true_direction = 'L'
             else:
-                true_direction = 'R' 
+                true_direction = 'R'
         elif relative_direction == 'opposite_percent':
             true_direction = batter_side
 
         return true_direction
 
-    def generate_pa_outcomes(self, n_games:int) -> None:
+    def generate_pa_outcomes(self, n_games: int) -> None:
         '''
             Sets pa_outcomes to have 10 outcomes per game, generated by the player's thresholds
         '''
@@ -97,19 +112,25 @@ class Player:
             game_outcomes = []
             for _ in range(10):
                 outcome = self.get_pa_outcome()
-                # generate a direction, even if it's not possible (like a strikeout) since it will be ignored
+                # generate a direction,
+                # even if it's not possible (like a strikeout) since it will be ignored
                 direction = self.get_outcome_direction()
 
                 game_outcomes.append(self.full_outcome_to_num(outcome, direction))
 
             generated_outcomes.append(game_outcomes)
-        
+
         self.pa_outcomes = generated_outcomes
 
-    def full_outcome_to_num(self, outcome: str, direction: str) -> int:
+    @staticmethod
+    def full_outcome_to_num(outcome: str, direction: str) -> int:
+        '''
+            TODO
+        '''
+
         num = 0
 
-        outcome_bits = math.ceil(math.log(len(Player.pa_outcome_names), 2))
+        #outcome_bits = math.ceil(math.log(len(Player.pa_outcome_names), 2))
         outcome_num = Player.outcome_num_map[outcome]
 
         direction_num = 0
@@ -119,12 +140,37 @@ class Player:
             direction_num = 2
 
         num = (outcome_num << 2) + direction_num
-        
+
         return num
+
+    @staticmethod
+    def isfloat(string: str) -> bool:
+        '''
+            TODO
+        '''
+
+        if string.isnumeric():
+            return True
+
+        splits = string.split('.')
+        if len(splits) == 1 or len(splits) == 2:
+            if len(splits[0]) == 0:
+                return False
+
+            if splits[0][0] == '-':
+                splits[0] = splits[0][1:]
+
+            if len(splits) == 2:
+                return splits[0].isnumeric() and splits[1].isnumeric()
+
+            return splits[0].isnumeric()
+
+        return False
 
     def get_pa_thresholds(self) -> List[float]:
         '''
-            Returns the upper threshold (between 0 and 1) for each outcome. Used to decide a plate appearance outcome using a random number
+            Returns the upper threshold (between 0 and 1) for each outcome.
+            Used to decide a plate appearance outcome using a random number
         '''
         thresholds = []
 
@@ -134,62 +180,53 @@ class Player:
 
         return thresholds
 
-    def get_pa_probs(self, player_info: dict) -> dict:
+    def get_pa_probs(self) -> dict:
         '''
-            Returns a dict containing only the the probability of each possible plate appearance outcomes for the input player
+            Returns a dict containing only the the probability of each possible plate appearance
+            outcomes for the input player
         '''
         probs = {}
 
-        total_pa = player_info['b_total_pa']
+        total_pa = self.player_info['b_total_pa']
 
-        for outcome, outcome_count in player_info.items():
+        for outcome, outcome_count in self.player_info.items():
             if outcome not in Player.pa_outcome_names:
                 continue
 
-            p = outcome_count / total_pa
-            probs[outcome] = p
+            prob = outcome_count / total_pa
+            probs[outcome] = prob
 
         return probs
 
-    def get_info(self, stats_line:str) -> dict:
+    @classmethod
+    def get_info(cls, stats_line: str) -> dict:
         '''
             Returns a dict of all of the player's information
         '''
-        d = {}
+        info = {}
 
         stats_splits = stats_line[: -1].split(',')
-        stats = [int(s) if s.isnumeric() else float(s) if isfloat(s) else s for s in stats_splits]
+        stats = [int(s) if s.isnumeric() \
+                    else float(s) if cls.isfloat(s) \
+                    else s \
+                for s in stats_splits]
 
-        for col, stat in zip(Player.col_names, stats):
-            d[col] = stat
+        for col, stat in zip(cls.col_names, stats):
+            info[col] = stat
 
-        return d
+        return info
 
     def _name_length(self):
+        '''
+            TODO
+        '''
+
         return len(self.player_info['first_name']) + len(self.player_info['last_name'])
 
     def __repr__(self):
         tab_size = 8
         num_tabs = ((Player.max_name_length + 1 - self._name_length()) // tab_size) + 1
-        return f'{self.player_info["first_name"]} {self.player_info["last_name"]}:' + '\t'*num_tabs + \
-               f'{self.player_info["on_base_plus_slg"]} OPS, {self.player_info["woba"]} WOBA'
-
-
-def isfloat(s:str) -> bool:
-    if s.isnumeric():
-        return True
-
-    splits = s.split('.')
-    if len(splits) == 1 or len(splits) == 2:
-        if len(splits[0]) == 0:
-            return False
-
-        if splits[0][0] == '-':
-            splits[0] = splits[0][1:]
-
-        if len(splits) == 2:
-            return splits[0].isnumeric() and splits[1].isnumeric()
-        else:
-            return splits[0].isnumeric()
-       
-    return False
+        return f'{self.player_info["first_name"]} {self.player_info["last_name"]}:' + \
+                '\t'*num_tabs + \
+                f'{self.player_info["on_base_plus_slg"]:.3f} OPS,'+ \
+                f'{self.player_info["woba"]:.3f} WOBA'

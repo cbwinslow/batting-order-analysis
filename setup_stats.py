@@ -7,9 +7,9 @@
 
 import sys
 from typing import Tuple
-from bs4 import BeautifulSoup
-import requests
-import pandas as pd
+from bs4 import BeautifulSoup # type: ignore
+import requests # type: ignore
+import pandas as pd # type: ignore
 
 def get_rl_splits(playerid:str) -> Tuple[float, float]:
     url = 'https://baseballsavant.mlb.com/savant-player/' + playerid + '?stats=statcast-r-batting-mlb&playerType=batter'
