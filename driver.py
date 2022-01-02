@@ -1,27 +1,13 @@
 '''
-    File: battingorder.py
+    File: driver.py
     Author: Drew Scott, 2021
-    Description:
-        Simulates every possible batting order for a given lineup and displays summary statistics of
-        the average runs (over a number of games) of the orders, and specific information about the
-        top and bottom 5 orders. The user may choose how many games each order is simulated for,
-        which players are in the lineup, or what each player's PA outcomes are in a single game
-        (see sample files).
-    Major TODOs:
-        1) Determine the accurate likelihoods of sacrifices and double plays for different out types
-        2) Enable some sort of pinch hitting scheme (right now, each player hits the entire game)
-        3) Enable some sort of pitcher dependent hitting results (even as simple as right-y/left-y;
-            right now hitting stats are full season aggregates)
-        4) Include edge cases like stealing, wild pitches, etc.
-        5) More detailed data (i.e. did a double go to right or left field?)
-        6) Player specific data (i.e. how often does a player try to steal?)
     Usage:
         For a random lineup:
-            python3 battingorder.py -n <simulations_per_order>
+            python3 driver.py -n <simulations_per_order>
         For a prespecified lineup of 9 players, format it like giants.txt (naming as in stats.csv)
-            python3 battingorder.py -lf <lineup filename> -n <simulations_per_order>
+            python3 driver.py -lf <lineup filename> -n <simulations_per_order>
         For a prespecified lineup of 9 players and at-bat outcomes (format like giants_outcomes.txt)
-            python3 battingorder.py -lf <lineup filename> -of <outcomes filename>
+            python3 driver.py -lf <lineup filename> -of <outcomes filename>
 '''
 
 import timeit
@@ -33,7 +19,6 @@ from lineup import Lineup
 from player import Player
 
 def get_lineup(lineup_filename: Optional[str]) -> Lineup:
-    # TODO:
     '''
         Sets the lineup for the simulation
     '''
@@ -85,11 +70,12 @@ def display_time(start: float, end: float) -> None:
 
 def main():
     '''
-        TODO
+        Runs the simulation
     '''
 
     start = timeit.default_timer()
 
+    # TODO: this call should be built in to one of the classes
     Player.set_metadata('stats.csv')
 
     lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
