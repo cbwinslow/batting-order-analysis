@@ -18,7 +18,7 @@ class Lineup:
 
     data_directory = 'data/'
     lineups_directory = 'teams/'
-    outcomes_directory = 'atbat_outcomes/'
+    outcomes_directory = 'pa_outcomes/'
     stats_filename = 'stats.csv'
 
     def __init__(self):

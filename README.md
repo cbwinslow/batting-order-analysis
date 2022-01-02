@@ -22,4 +22,4 @@ which players are in the lineup, or what each player's PA outcomes are in a sing
 [View on PyPI](https://pypi.org/project/batting-order-analysis/)
 
 ## Usage:
-driver.py supplies a basic front-end, read its usage there
+driver.py supplies a basic interface, read its usage there

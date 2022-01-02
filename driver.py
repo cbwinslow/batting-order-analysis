@@ -4,9 +4,9 @@
     Usage:
         For a random lineup:
             python3 driver.py -n <simulations_per_order>
-        For a prespecified lineup of 9 players, format it like giants.txt (naming as in stats.csv)
+        For a prespecified lineup of 9 players (like giants.txt, naming as in stats.csv)
             python3 driver.py -lf <lineup filename> -n <simulations_per_order>
-        For a prespecified lineup of 9 players and at-bat outcomes (format like giants_outcomes.txt)
+        For a prespecified lineup of 9 players and their PA outcomes (like giants_outcomes.txt)
             python3 driver.py -lf <lineup filename> -of <outcomes filename>
 '''
 
@@ -14,9 +14,9 @@ import timeit
 import sys
 from typing import Optional, Tuple, List
 
-from simulation import Simulation
-from lineup import Lineup
-from player import Player
+from batting_order_analysis.simulation import Simulation
+from batting_order_analysis.lineup import Lineup
+from batting_order_analysis.player import Player
 
 def get_lineup(lineup_filename: Optional[str]) -> Lineup:
     '''
@@ -74,9 +74,6 @@ def main():
     '''
 
     start = timeit.default_timer()
-
-    # TODO: this call should be built in to one of the classes
-    Player.set_metadata('stats.csv')
 
     lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
 
