@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: batting-order-analysis
-Version: 0.0.28
+Version: 0.0.29
 Summary: Analysis of different batting orders given a lineup
 Home-page: https://github.com/drewscottt/batting_order_analysis
 Author: Drew Scott
@@ -32,6 +32,10 @@ License-File: LICENSE
     4) Include edge cases like stealing, wild pitches, etc.
     5) More detailed data (i.e. did a double go to right or left field?)
     6) Player specific data (i.e. how often does a player try to steal?)
+
+## Installation:
+    pip install batting-order-analysis
+    [View on PyPI](https://pypi.org/project/batting-order-analysis/)
 
 ## Usage:
     driver.py supplies a basic front-end, read its usage there

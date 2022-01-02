@@ -9,7 +9,7 @@ import random
 from typing import List, Tuple, Optional, Dict
 import heapq
 import itertools
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from functools import partial
 import tqdm # type: ignore
 
@@ -33,8 +33,9 @@ class Simulation:
 
         # run the simulation
         avg_runs_per_order = []
-        # TODO: 10?
-        with Pool(10) as pool:
+
+        num_cores = cpu_count()
+        with Pool(num_cores) as pool:
             avg_runs_per_order = list(tqdm.tqdm( \
                 pool.imap(partial(self.sim_order), orders), \
                 total=len(orders)))

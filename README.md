@@ -17,5 +17,9 @@
     5) More detailed data (i.e. did a double go to right or left field?)
     6) Player specific data (i.e. how often does a player try to steal?)
 
+## Installation:
+    pip install batting-order-analysis
+    [View on PyPI](https://pypi.org/project/batting-order-analysis/)
+
 ## Usage:
     driver.py supplies a basic front-end, read its usage there
