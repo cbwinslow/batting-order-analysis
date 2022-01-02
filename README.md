@@ -19,7 +19,7 @@
 
 ## Installation:
     pip install batting-order-analysis
-    [View on PyPI](https://pypi.org/project/batting-order-analysis/)
+[View on PyPI](https://pypi.org/project/batting-order-analysis/)
 
 ## Usage:
     driver.py supplies a basic front-end, read its usage there
