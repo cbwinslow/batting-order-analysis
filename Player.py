@@ -5,7 +5,7 @@
 '''
 
 import random
-from typing import List, Dict
+from typing import List, Dict, Union, Any
 
 class Player:
     '''
@@ -23,8 +23,8 @@ class Player:
     directions = ['pull_percent', 'straightaway_percent', 'opposite_percent']
 
     def __init__(self, stat_line: str):
-        self.player_info: dict = Player.get_info(stat_line)
-        self.player_pa_probs: dict = self.get_pa_probs()
+        self.player_info: Dict[str, Any] = Player.get_info(stat_line)
+        self.player_pa_probs: Dict[str, float] = self.get_pa_probs()
         self.player_pa_thresholds: List[float] = self.get_pa_thresholds()
         self.pa_outcomes: List[List[int]] = []
 
@@ -78,16 +78,16 @@ class Player:
         # TODO: make better
         direction_num = random.random() * 100
         relative_direction = Player.directions[2]
-        if direction_num < self.player_info[Player.directions[0]]:
+        if direction_num < float(self.player_info[Player.directions[0]]):
             relative_direction = Player.directions[0]
-        elif direction_num < self.player_info[Player.directions[0]] + \
-                self.player_info[Player.directions[1]]:
+        elif direction_num < float(self.player_info[Player.directions[0]]) + \
+                float(self.player_info[Player.directions[1]]):
             relative_direction = Player.directions[1]
 
         # TODO: get pitcher info
         # assume pitcher is a righty, so anyone who switch hits will be lefty
         batter_side = 'R'
-        if self.player_info['bats_left_pct'] > 0:
+        if float(self.player_info['bats_left_pct']) > 0:
             batter_side = 'L'
 
         # turn relative direction into true direction
@@ -180,30 +180,30 @@ class Player:
 
         return thresholds
 
-    def get_pa_probs(self) -> dict:
+    def get_pa_probs(self) -> Dict[str, float]:
         '''
             Returns a dict containing only the the probability of each possible plate appearance
             outcomes for the input player
         '''
         probs = {}
 
-        total_pa = self.player_info['b_total_pa']
+        total_pa = int(self.player_info['b_total_pa'])
 
         for outcome, outcome_count in self.player_info.items():
             if outcome not in Player.pa_outcome_names:
                 continue
 
-            prob = outcome_count / total_pa
+            prob = int(outcome_count) / total_pa
             probs[outcome] = prob
 
         return probs
 
     @classmethod
-    def get_info(cls, stats_line: str) -> dict:
+    def get_info(cls, stats_line: str) -> Dict[str, Any]:
         '''
             Returns a dict of all of the player's information
         '''
-        info = {}
+        info: Dict[str, Any] = {}
 
         stats_splits = stats_line[: -1].split(',')
         stats = [int(s) if s.isnumeric() \
