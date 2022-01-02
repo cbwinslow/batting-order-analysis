@@ -71,7 +71,7 @@ class Player:
 
     def get_outcome_direction(self) -> str:
         '''
-            TODO
+            Generates the direction of the PA outcome
         '''
 
         # determine which relative direction the outcome was
@@ -125,7 +125,7 @@ class Player:
     @staticmethod
     def full_outcome_to_num(outcome: str, direction: str) -> int:
         '''
-            TODO
+            Converts the outcome information to a number
         '''
 
         num = 0
@@ -146,7 +146,7 @@ class Player:
     @staticmethod
     def isfloat(string: str) -> bool:
         '''
-            TODO
+            Returns true if a str can be read as a float, false otherwise
         '''
 
         if string.isnumeric():
@@ -216,9 +216,9 @@ class Player:
 
         return info
 
-    def _name_length(self):
+    def _name_length(self) -> int:
         '''
-            TODO
+            Returns the length of the player's name
         '''
 
         return len(self.player_info['first_name']) + len(self.player_info['last_name'])
@@ -228,5 +228,5 @@ class Player:
         num_tabs = ((Player.max_name_length + 1 - self._name_length()) // tab_size) + 1
         return f'{self.player_info["first_name"]} {self.player_info["last_name"]}:' + \
                 '\t'*num_tabs + \
-                f'{self.player_info["on_base_plus_slg"]:.3f} OPS,'+ \
+                f'{self.player_info["on_base_plus_slg"]:.3f} OPS, '+ \
                 f'{self.player_info["woba"]:.3f} WOBA'
