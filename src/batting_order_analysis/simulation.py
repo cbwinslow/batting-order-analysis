@@ -20,11 +20,47 @@ class Simulation:
         TODO
     '''
 
-    def __init__(self, sims_per_order: int, lineup: Lineup):
+    def __init__(self, lineup: Lineup, sims_per_order: int = 1, pa_outcomes_filename: Optional[str] = None):
         self.sims_per_order = sims_per_order
         self.lineup = lineup
 
-    def run_sim(self):
+        self.pa_outcomes = []
+        self._set_pa_outcomes(pa_outcomes_filename)   
+ 
+    def _set_pa_outcomes(self, outcome_filename: Optional[str]) -> None:
+        ''' 
+            Generates the PA outcomes for each player in the lineup for each game that will be simulated
+            If an outcome filename is supplied, outcomes will be retreived from there, and sims_per_order ignored
+            Stores this information both in the Player instance and in this Simulation instance
+        '''
+
+        # set the outcomes in all of the player instances
+        if outcome_filename is None:
+            for player in self.players:
+                player.generate_pa_outcomes(self.sims_per_order)
+
+        else:
+            # TODO: good place to do this?
+            self.sims_per_order = 1
+
+            outcome_filepath = Lineup.data_directory + Lineup.outcomes_directory + outcome_filename
+            raw_outcomes = pkg_resources.resource_stream(__name__, outcome_filepath).read().decode().split('\n')[:-1]
+
+            for player_outcome in raw_outcomes:
+                first_name, last_name = player_outcome.split(':')[0].split()
+                player = self._get_player(first_name, last_name)
+
+                player.set_pa_outcomes(player_outcome.split(':')[1].split(','))
+
+        # read the outcomes from the player instances into the simulation instance
+        for game_num in range(self.sims_per_order):
+            game_pas = {}
+            for i, player in enumerate(self.players):
+                game_pas[i] = player.pa_outcomes[game_num]
+
+            self.pa_outcomes.append(game_pas)
+
+    def run_full_sim(self) -> None:
         '''
             Simulates per_order games for each possible batting order
         '''
@@ -37,7 +73,7 @@ class Simulation:
         num_cores = cpu_count()
         with Pool(num_cores) as pool:
             avg_runs_per_order = list(tqdm.tqdm( \
-                pool.imap(partial(self.sim_order), orders), \
+                pool.imap(partial(self._sim_order), orders), \
                 total=len(orders)))
 
         # aggregate data
@@ -81,7 +117,7 @@ class Simulation:
                 print(f'\t{str(self.lineup.players[ind])}')
             print()
 
-    def sim_order(self, order: List[int]) -> float:
+    def _sim_order(self, order: List[int]) -> float:
         '''
             Simulates per_order games for the given order
         '''
@@ -90,10 +126,10 @@ class Simulation:
         for game_num in range(self.sims_per_order):
             leadoff = 0
             thru_order = 0
-            game_outcomes = self.lineup.game_outcomes[game_num]
+            pa_outcomes_game = self.pa_outcomes[game_num]
             for _ in range(9):
-                runs, leadoff, thru_order = self.sim_inning(\
-                    game_outcomes, leadoff, thru_order, order)
+                runs, leadoff, thru_order = self._sim_inning(\
+                    pa_outcomes_game, leadoff, thru_order, order)
 
                 tot_runs_order += runs
 
@@ -102,7 +138,7 @@ class Simulation:
         return avg_runs_order
 
     @staticmethod
-    def new_batter(cur_batter: int, thru_order: int) -> Tuple[int, int]:
+    def _new_batter(cur_batter: int, thru_order: int) -> Tuple[int, int]:
         '''
             Returns the index of the next batter
         '''
@@ -111,7 +147,7 @@ class Simulation:
 
         return cur_batter + 1, thru_order
 
-    def sim_inning(
+    def _sim_inning(
             self,
             generated_outcomes: Dict[int, List[int]],
             leadoff: int,
@@ -139,7 +175,7 @@ class Simulation:
             # TODO: simulate PA -- should do this in Player class so it holds constant across sims
             if len(generated_outcomes[cur_batter]) <= thru_order:
                 outs += 1
-                cur_batter_pos, thru_order = self.new_batter(cur_batter_pos, thru_order)
+                cur_batter_pos, thru_order = self._new_batter(cur_batter_pos, thru_order)
                 cur_batter = order[cur_batter_pos]
                 continue
 
@@ -236,11 +272,11 @@ class Simulation:
             else:
                 raise Exception(f"Invalid outcome name: {outcome}")
 
-            cur_batter_pos, thru_order = self.new_batter(cur_batter_pos, thru_order)
+            cur_batter_pos, thru_order = self._new_batter(cur_batter_pos, thru_order)
             cur_batter = order[cur_batter_pos]
             cur_player = self.lineup.players[cur_batter]
 
-        cur_batter_pos, thru_order = self.new_batter(cur_batter_pos, thru_order)
+        cur_batter_pos, thru_order = self._new_batter(cur_batter_pos, thru_order)
 
         return runs, cur_batter_pos, thru_order
 

@@ -12,7 +12,7 @@ src/batting_order_analysis.egg-info/dependency_links.txt
 src/batting_order_analysis.egg-info/requires.txt
 src/batting_order_analysis.egg-info/top_level.txt
 src/batting_order_analysis/data/stats.csv
-src/batting_order_analysis/data/atbat_outcomes/giants_outcomes.txt
+src/batting_order_analysis/data/pa_outcomes/giants_outcomes.txt
 src/batting_order_analysis/data/teams/astros.txt
 src/batting_order_analysis/data/teams/dodgers.txt
 src/batting_order_analysis/data/teams/giants.txt

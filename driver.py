@@ -18,19 +18,6 @@ from batting_order_analysis.simulation import Simulation
 from batting_order_analysis.lineup import Lineup
 from batting_order_analysis.player import Player
 
-def get_lineup(lineup_filename: Optional[str]) -> Lineup:
-    '''
-        Sets the lineup for the simulation
-    '''
-    lineup = Lineup()
-
-    if lineup_filename is not None:
-        lineup.set_players(lineup_filename)
-    else:
-        lineup.generate_random_lineup()
-
-    return lineup
-
 def parse_arguments(args: List[str]) -> Tuple[Optional[str], Optional[str], int]:
     '''
         Parses the commandline arguments
@@ -77,16 +64,11 @@ def main():
 
     lineup_filename, outcome_filename, sims_per_order = parse_arguments(sys.argv[1:])
 
-    lineup = get_lineup(lineup_filename)
-    lineup.set_pa_outcomes(outcome_filename, sims_per_order)
+    lineup = Lineup()
+    lineup.set_players(lineup_filename)
 
-    print("Players:")
-    for player in lineup.players:
-        print(player)
-    print()
-
-    sim = Simulation(sims_per_order, lineup)
-    sim.run_sim()
+    sim = Simulation(lineup, sims_per_order, outcome_filename)
+    sim.run_full_sim()
 
     end = timeit.default_timer()
 
