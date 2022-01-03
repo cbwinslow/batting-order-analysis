@@ -117,8 +117,8 @@ class Lineup:
             splits = line.split(',')
             name = splits[0] + ',' + splits[1]
 
-            if name in player_names:
-                players[player_names.index(name)] = Player(line)
+            if name in lineup_names_arr:
+                players[lineup_names_arr.index(name)] = Player(line)
 
         for player in players:
             self._add_player(player)
