@@ -15,36 +15,29 @@ class Lineup:
 
         Public methods:
             set_players: sets players in lineup either randomly or based on input filename
-            get_player: returns a Player instance who matches first_name and last_name
+            get_player: returns a Player instance who matches first_name and last_name from
+                the players list
     '''
-
-    # ** DATA PATH SEGMENTS ** #
-    data_directory = 'data/' 
-
-    # directly below data_directory
-    lineups_directory = 'teams/'
-    outcomes_directory = 'pa_outcomes/'
-    stats_filename = 'stats.csv'
-
-    # full paths
-    stats_filepath = data_directory + stats_filename
 
     def __init__(self):
         self.players: List[Player] = []
-
-        # TODO: good place to put this?
-        Player.set_metadata(Lineup.stats_filename)
+        self.random_lineup = True
 
     def set_players(self, lineup_filename: Optional[str] = None) -> None:
         '''
             Sets the players in this lineup
         '''
 
+        # clear players
+        self.players = []
+
         # add the players
         if lineup_filename is None:
             self._generate_random_lineup()
+            self.random_lineup = False
         else:
             self._generate_file_lineup(lineup_filename)
+            self.random_lineup = True
 
         # display the players
         print("Players:")
@@ -52,12 +45,24 @@ class Lineup:
             print(player)
         print()
 
+    def get_player(self, first_name: str, last_name: str) -> Player:
+        '''
+            Returns the player in the lineup who matches first and last name
+        '''
+
+        for player in self.players:
+            if player.player_info['first_name'] == first_name \
+                and player.player_info['last_name'] == last_name:
+                return player
+
+        raise Exception(f'Player {first_name} {last_name} not found from PA outcome file')
+
     def _generate_random_lineup(self) -> None:
         '''
             Generates a random lineup of 9 players drawn from stats_filename
         '''
 
-        stats = pkg_resources.resource_stream(__name__, Lineup.stats_filepath).read().decode(encoding='utf-8-sig')
+        stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
         stat_lines = stats.split('\n')
 
         # get all the players
@@ -76,7 +81,7 @@ class Lineup:
         '''
 
         # TODO: what if lineup_filename not located in package contents (i.e. is user generated?)
-        lineup_filepath = Lineup.data_directory + Lineup.lineups_directory + lineup_filename
+        lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
 
         # get the players specified in the input file
         raw_players = pkg_resources.resource_stream(__name__, lineup_filepath).read().decode().split('\n')[:-1]
@@ -86,7 +91,7 @@ class Lineup:
             player_names.append(f'{last},{first}')
 
         # read the player data from the stats csv
-        stats = pkg_resources.resource_stream(__name__, Lineup.stats_filepath).read().decode(encoding='utf-8-sig')
+        stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
         stat_lines = stats.split('\n')
 
         players: List[Optional[Player]] = [None] * 9 
@@ -112,18 +117,6 @@ class Lineup:
             raise Exception('Tried adding None to lineup')
 
         self.players.append(player)
-
-    def get_player(self, first_name: str, last_name: str) -> Player:
-        '''
-            Returns the player in the lineup who matches first and last name
-        '''
-
-        for player in self.players:
-            if player.player_info['first_name'] == first_name \
-                and player.player_info['last_name'] == last_name:
-                return player
-
-        raise Exception(f'Player {first_name} {last_name} not found from PA outcome file')
 
     @staticmethod
     def _get_nine(total_count: int) -> List[int]:

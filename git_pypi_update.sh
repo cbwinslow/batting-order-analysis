@@ -7,11 +7,12 @@ if [[ "$#" -ne 1 ]]; then
 else
     # TODO: try changing version in setup.cfg, manually have to now
 
+    rm -rf dist
+    python3 -m build
+
     git add .
     git commit -m "$1"
     git push origin main
 
-    rm -rf dist
-    python3 -m build
     twine upload dist/*
 fi

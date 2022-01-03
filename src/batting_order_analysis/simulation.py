@@ -15,10 +15,12 @@ from functools import partial
 import tqdm # type: ignore
 
 from .lineup import Lineup
+from .player import Player
 
 class Simulation:
     '''
-        TODO
+        Public methods:
+            run_full_sim: runs sims_per_order games through every possible order of the lineup
     '''
 
     def __init__(self, lineup: Lineup, sims_per_order: int = 1, pa_outcomes_filename: Optional[str] = None):
@@ -27,39 +29,6 @@ class Simulation:
 
         self.pa_outcomes = []
         self._set_pa_outcomes(pa_outcomes_filename)   
- 
-    def _set_pa_outcomes(self, outcome_filename: Optional[str]) -> None:
-        ''' 
-            Generates the PA outcomes for each player in the lineup for each game that will be simulated
-            If an outcome filename is supplied, outcomes will be retreived from there, and sims_per_order ignored
-            Stores this information both in the Player instance and in this Simulation instance
-        '''
-
-        # set the outcomes in all of the player instances
-        if outcome_filename is None:
-            for player in self.lineup.players:
-                player.generate_pa_outcomes(self.sims_per_order)
-
-        else:
-            # TODO: good place to do this?
-            self.sims_per_order = 1
-
-            outcome_filepath = Lineup.data_directory + Lineup.outcomes_directory + outcome_filename
-            raw_outcomes = pkg_resources.resource_stream(__name__, outcome_filepath).read().decode().split('\n')[:-1]
-
-            for player_outcome in raw_outcomes:
-                first_name, last_name = player_outcome.split(':')[0].split()
-                player = self.lineup.get_player(first_name, last_name)
-
-                player.set_pa_outcomes(player_outcome.split(':')[1].split(','))
-
-        # read the outcomes from the player instances into the simulation instance
-        for game_num in range(self.sims_per_order):
-            game_pas = {}
-            for i, player in enumerate(self.lineup.players):
-                game_pas[i] = player.pa_outcomes[game_num]
-
-            self.pa_outcomes.append(game_pas)
 
     def run_full_sim(self) -> None:
         '''
@@ -137,16 +106,6 @@ class Simulation:
         avg_runs_order = tot_runs_order / self.sims_per_order
 
         return avg_runs_order
-
-    @staticmethod
-    def _new_batter(cur_batter: int, thru_order: int) -> Tuple[int, int]:
-        '''
-            Returns the index of the next batter
-        '''
-        if cur_batter == 8:
-            return 0, thru_order+1
-
-        return cur_batter + 1, thru_order
 
     def _sim_inning(
             self,
@@ -281,3 +240,45 @@ class Simulation:
 
         return runs, cur_batter_pos, thru_order
 
+    def _set_pa_outcomes(self, outcome_filename: Optional[str]) -> None:
+        ''' 
+            Generates the PA outcomes for each player in the lineup for each game that will be simulated
+            If an outcome filename is supplied, outcomes will be retreived from there, and sims_per_order ignored
+            Stores this information both in the Player instance and in this Simulation instance
+        '''
+
+        # set the outcomes in all of the player instances
+        if outcome_filename is None:
+            for player in self.lineup.players:
+                player.generate_pa_outcomes(self.sims_per_order)
+
+        else:
+            # TODO: good place to do this?
+            self.sims_per_order = 1
+
+            outcome_filepath = Player.data_directory + Player.outcomes_directory + outcome_filename
+            raw_outcomes = pkg_resources.resource_stream(__name__, outcome_filepath).read().decode().split('\n')[:-1]
+
+            for player_outcome in raw_outcomes:
+                first_name, last_name = player_outcome.split(':')[0].split()
+                player = self.lineup.get_player(first_name, last_name)
+
+                player.set_pa_outcomes(player_outcome.split(':')[1].split(','))
+
+        # read the outcomes from the player instances into the simulation instance
+        for game_num in range(self.sims_per_order):
+            game_pas = {}
+            for i, player in enumerate(self.lineup.players):
+                game_pas[i] = player.pa_outcomes[game_num]
+
+            self.pa_outcomes.append(game_pas)
+
+    @staticmethod
+    def _new_batter(cur_batter: int, thru_order: int) -> Tuple[int, int]:
+        '''
+            Returns the index of the next batter
+        '''
+        if cur_batter == 8:
+            return 0, thru_order+1
+
+        return cur_batter + 1, thru_order
