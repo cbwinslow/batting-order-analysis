@@ -55,7 +55,7 @@ class Simulation:
         # read the outcomes from the player instances into the simulation instance
         for game_num in range(self.sims_per_order):
             game_pas = {}
-            for i, player in enumerate(self.players):
+            for i, player in enumerate(self.lineup.players):
                 game_pas[i] = player.pa_outcomes[game_num]
 
             self.pa_outcomes.append(game_pas)
