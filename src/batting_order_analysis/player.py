@@ -48,7 +48,7 @@ class Player:
         self._set_player_info(stat_line)
 
         self.player_pa_probabilities: Dict[str, float] = {} 
-        self._set_player_probabilities()        
+        self._set_player_pa_probabilities()        
 
         self.player_pa_thresholds: List[float] = self._set_player_pa_thresholds()
         self.pa_outcomes: List[List[int]] = []
