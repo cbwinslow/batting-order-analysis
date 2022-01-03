@@ -26,7 +26,7 @@ class Lineup:
     stats_filename = 'stats.csv'
 
     # full paths
-    stats_filepath = Lineup.data_directory + Lineup.stats_filename
+    stats_filepath = data_directory + stats_filename
 
     def __init__(self):
         self.players: List[Player] = []
