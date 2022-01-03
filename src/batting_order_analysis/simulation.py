@@ -1,7 +1,6 @@
 '''
     File: simulation.py
     Author: Drew Scott
-    Description: 
 '''
 
 import pkg_resources
@@ -64,8 +63,7 @@ class Simulation:
         print(f'Avg. runs for sim: {avg_runs:.2f}')
         print(f'Min runs for sim: {worst_runs}\n')
 
-        # TODO: only do this when user specifies lineup
-        if True:
+        if not self.lineup.random_lineup:
             print('Order of interest:')
             print(f'Average runs for order: {avg_runs_per_order[0]}')
             for ind in orders[0]:

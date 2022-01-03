@@ -1,7 +1,6 @@
 '''
     File: Lineup.py
     Author: Drew Scott
-    Description: Implementation of a class to store information and statistics about a player.
 '''
 
 import pkg_resources
