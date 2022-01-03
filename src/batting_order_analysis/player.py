@@ -50,7 +50,9 @@ class Player:
         self.player_pa_probabilities: Dict[str, float] = {} 
         self._set_player_pa_probabilities()        
 
-        self.player_pa_thresholds: List[float] = self._set_player_pa_thresholds()
+        self.player_pa_thresholds: List[float] = [] 
+        self._set_player_pa_thresholds()
+
         self.pa_outcomes: List[List[int]] = []
 
     def generate_pa_outcomes(self, n_games: int) -> None:
