@@ -4,6 +4,7 @@
     Description: 
 '''
 
+import pkg_resources
 from statistics import mean
 import random
 from typing import List, Tuple, Optional, Dict
