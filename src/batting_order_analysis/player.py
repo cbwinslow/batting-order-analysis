@@ -41,7 +41,7 @@ class Player:
     stats_filepath = data_directory + stats_filename
 
     def __init__(self, stat_line: str):
-        if not metadata_isset:
+        if not Player.metadata_isset:
             Player._set_metadata()
 
         self.player_info: Dict[str, Any] = {} 
