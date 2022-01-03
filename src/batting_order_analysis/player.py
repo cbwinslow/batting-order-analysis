@@ -45,12 +45,12 @@ class Player:
             Player._set_metadata()
 
         self.player_info: Dict[str, Any] = {} 
-        self._create_player_info(stat_line)
+        self._set_player_info(stat_line)
 
         self.player_pa_probabilities: Dict[str, float] = {} 
-        self._create_player_probabilities()        
+        self._set_player_probabilities()        
 
-        self.player_pa_thresholds: List[float] = self._create_player_pa_thresholds()
+        self.player_pa_thresholds: List[float] = self._set_player_pa_thresholds()
         self.pa_outcomes: List[List[int]] = []
 
     def generate_pa_outcomes(self, n_games: int) -> None:
@@ -128,21 +128,22 @@ class Player:
 
         return true_direction
 
-    def _create_player_info(self, stat_line: str) -> None:
+    def _set_player_info(self, stat_line: str) -> None:
         '''
             Sets all of the player's information
         '''
 
         stat_splits = stat_line[: -1].split(',')
+
         stats = [int(s) if s.isnumeric() \
-                    else float(s) if cls._isfloat(s) \
+                    else float(s) if Player._isfloat(s) \
                     else s \
                 for s in stat_splits]
 
-        for col, stat in zip(cls.col_names, stats):
+        for col, stat in zip(Player.col_names, stats):
             self.player_info[col] = stat
 
-    def _create_player_pa_probabilities(self) -> None:
+    def _set_player_pa_probabilities(self) -> None:
         '''
             Sets the probability of each possible plate appearance outcomes for the input player
         '''
@@ -156,9 +157,9 @@ class Player:
             prob = int(outcome_count) / total_pa
             self.player_pa_probabilities[outcome] = prob
 
-    def _create_player_pa_thresholds(self) -> None:
+    def _set_player_pa_thresholds(self) -> None:
         '''
-            Sets the upper threshodl (between 0 and 1) for each outcome name.
+            Sets the upper threshold (between 0 and 1) for each outcome name.
             Used to decide a plate appearance outcome using a random number
         '''
 
