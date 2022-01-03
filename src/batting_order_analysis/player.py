@@ -167,7 +167,7 @@ class Player:
 
         self.player_pa_thresholds.append(self.player_pa_probabilities[Player.pa_outcome_names[0]])
         for i, outcome in enumerate(Player.pa_outcome_names[1:], start=1):
-            self.player_pa_thresholds.append(thresholds[i-1] + self.player_pa_probabilities[outcome])
+            self.player_pa_thresholds.append(self.player_pa_thresholds[i-1] + self.player_pa_probabilities[outcome])
 
     def _name_length(self) -> int:
         '''
