@@ -21,22 +21,30 @@ class Lineup:
 
     def __init__(self):
         self.players: List[Player] = []
-        self.random_lineup = True
+        self.random_lineup = False
 
-    def set_players(self, lineup_filename: Optional[str] = None) -> None:
+    def set_players(self,
+        lineup_filename: Optional[str] = None,
+        lineup_names_arr: Optional[List[str]] = None
+    ) -> None:
         '''
             Sets the players in this lineup
         '''
 
-        # clear players
+        # reset to default
         self.players = []
+        self.random_lineup = False
 
         # add the players
-        if lineup_filename is None:
-            self._generate_random_lineup()
-            self.random_lineup = False
-        else:
+        if lineup_names_arr is not None:
+            self._generate_playername_arr_lineup(lineup_names_arr)
+
+        elif lineup_filename is not None:
             self._generate_file_lineup(lineup_filename)
+
+        else:
+            # randomly generate players
+            self._generate_random_lineup()
             self.random_lineup = True
 
         # display the players
@@ -75,9 +83,11 @@ class Lineup:
         for index in player_indexes:
             self._add_player(players[index])
 
+    # TODO: standardize player name formats to last_name,first_name
     def _generate_file_lineup(self, lineup_filename: str) -> None:
         '''
             Sets the players in the lineup file to this lineup, in the order listed in the file
+            Player names in form: first_name last_name
         '''
 
         # TODO: what if lineup_filename not located in package contents (i.e. is user generated?)
@@ -90,11 +100,19 @@ class Lineup:
             first, last = player.split()
             player_names.append(f'{last},{first}')
 
+        self._generate_playername_arr_lineup(player_names)
+
+    def _generate_playername_arr_lineup(self, lineup_names_arr: List[str]) -> None:
+        '''
+            Sets the players in the input name list to be the players in the lineup
+            Player names in form: last_name,first_name
+        '''
+
         # read the player data from the stats csv
         stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
         stat_lines = stats.split('\n')
 
-        players: List[Optional[Player]] = [None] * 9 
+        players: List[Optional[Player]] = [None] * 9
         for line in stat_lines[1:]:
             splits = line.split(',')
             name = splits[0] + ',' + splits[1]
@@ -123,6 +141,7 @@ class Lineup:
         '''
             Returns a list of length 9 with unique indexes in the range of total_count
         '''
+
         nine: List[int] = []
 
         while len(nine) < 9:
