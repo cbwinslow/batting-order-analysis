@@ -15,6 +15,7 @@ class Lineup:
 
         Public methods:
             set_players: sets players in lineup either randomly or based on input filename
+            get_player: returns a Player instance who matches first_name and last_name
     '''
 
     # ** DATA PATH SEGMENTS ** #
@@ -112,7 +113,7 @@ class Lineup:
 
         self.players.append(player)
 
-    def _get_player(self, first_name: str, last_name: str) -> Player:
+    def get_player(self, first_name: str, last_name: str) -> Player:
         '''
             Returns the player in the lineup who matches first and last name
         '''

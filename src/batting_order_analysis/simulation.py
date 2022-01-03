@@ -36,7 +36,7 @@ class Simulation:
 
         # set the outcomes in all of the player instances
         if outcome_filename is None:
-            for player in self.players:
+            for player in self.lineup.players:
                 player.generate_pa_outcomes(self.sims_per_order)
 
         else:
@@ -48,7 +48,7 @@ class Simulation:
 
             for player_outcome in raw_outcomes:
                 first_name, last_name = player_outcome.split(':')[0].split()
-                player = self._get_player(first_name, last_name)
+                player = self.lineup.get_player(first_name, last_name)
 
                 player.set_pa_outcomes(player_outcome.split(':')[1].split(','))
 
