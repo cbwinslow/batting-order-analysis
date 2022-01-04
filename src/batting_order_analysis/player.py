@@ -3,7 +3,7 @@
     Author: Drew Scott
 '''
 
-import pkg_resources
+import pkgutil
 import random
 from typing import List, Dict, Union, Any
 
@@ -226,8 +226,7 @@ class Player:
             Sets up some static metadata for the Player class
         '''
 
-        stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
-        stat_lines = stats.split('\n')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
 
         # get all of the column names
         cls.col_names = stat_lines[0].split(',')

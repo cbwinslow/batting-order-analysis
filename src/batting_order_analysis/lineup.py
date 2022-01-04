@@ -3,7 +3,6 @@
     Author: Drew Scott
 '''
 
-import pkg_resources
 import pkgutil
 import os.path
 from typing import List, Optional
@@ -73,8 +72,8 @@ class Lineup:
             Generates a random lineup of 9 players drawn from stats_filename
         '''
 
-        stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
-        stat_lines = stats.split('\n')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
+        # saving in case: decode(encoding='utf-8-sig')
 
         # get all the players
         players = []
@@ -96,13 +95,7 @@ class Lineup:
         lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
 
         # get the players specified in the input file
-        raw_players = pkgutil.get_data(__package__, lineup_filepath).decode().split('\n')[:-1]
-        print(raw_players)
-#        raw_players = pkg_resources.resource_stream(__name__, lineup_filepath).read().decode().split('\n')[:-1]
-        player_names = []
-        for player in raw_players:
-            first, last = player.split()
-            player_names.append(f'{last},{first}')
+        player_names = pkgutil.get_data(__package__, lineup_filepath).decode().split('\n')[:-1]
 
         self._generate_playername_arr_lineup(player_names)
 
@@ -113,8 +106,7 @@ class Lineup:
         '''
 
         # read the player data from the stats csv
-        stats = pkg_resources.resource_stream(__name__, Player.stats_filepath).read().decode(encoding='utf-8-sig')
-        stat_lines = stats.split('\n')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
 
         players: List[Optional[Player]] = [None] * 9
         for line in stat_lines[1:]:

@@ -3,7 +3,7 @@
     Author: Drew Scott
 '''
 
-import pkg_resources
+import pkgutil
 from statistics import mean
 import random
 from typing import List, Tuple, Optional, Dict
@@ -240,9 +240,11 @@ class Simulation:
 
     def _set_pa_outcomes(self, outcome_filename: Optional[str]) -> None:
         ''' 
-            Generates the PA outcomes for each player in the lineup for each game that will be simulated
-            If an outcome filename is supplied, outcomes will be retreived from there, and sims_per_order ignored
+            Generates the PA outcomes for each player in the lineup for each game to be simulated
+            If an outcome filename is supplied, sims_per_order will be ignored (only 1 game)
+
             Stores this information both in the Player instance and in this Simulation instance
+                in appropriate formats
         '''
 
         # set the outcomes in all of the player instances
@@ -255,9 +257,10 @@ class Simulation:
             self.sims_per_order = 1
 
             outcome_filepath = Player.data_directory + Player.outcomes_directory + outcome_filename
-            raw_outcomes = pkg_resources.resource_stream(__name__, outcome_filepath).read().decode().split('\n')[:-1]
 
-            for player_outcome in raw_outcomes:
+            player_outcomes = pkgutil.get_data(__package__, outcome_filepath).decode().split('\n')[:-1]
+
+            for player_outcome in player_outcomes:
                 first_name, last_name = player_outcome.split(':')[0].split()
                 player = self.lineup.get_player(first_name, last_name)
 
