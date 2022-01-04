@@ -90,6 +90,8 @@ class Lineup:
             Player names in form: last_name,first_name
         '''
 
+        print(os.path.exists(lineup_filename))
+
         # TODO: what if lineup_filename not located in package contents (i.e. is user generated?)
         lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
 
