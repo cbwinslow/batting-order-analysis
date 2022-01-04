@@ -72,8 +72,7 @@ class Lineup:
             Generates a random lineup of 9 players drawn from stats_filename
         '''
 
-        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
-        # saving in case: decode(encoding='utf-8-sig')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode(encoding='utf-8-sig').split('\n')
 
         # get all the players
         players = []
@@ -106,7 +105,7 @@ class Lineup:
         '''
 
         # read the player data from the stats csv
-        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode(encoding='utf-8-sig').split('\n')
 
         players: List[Optional[Player]] = [None] * 9
         for line in stat_lines[1:]:

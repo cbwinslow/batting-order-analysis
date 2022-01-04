@@ -226,7 +226,7 @@ class Player:
             Sets up some static metadata for the Player class
         '''
 
-        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode().split('\n')
+        stat_lines = pkgutil.get_data(__package__, Player.stats_filepath).decode(encoding='utf-8-sig').split('\n')
 
         # get all of the column names
         cls.col_names = stat_lines[0].split(',')
