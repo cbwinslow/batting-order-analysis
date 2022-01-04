@@ -1,9 +1,9 @@
-Wilmer Difo
-Jacob Stallings
-Colin Moran
-Michael Chavis
-Hoy Park
-Kevin Newman
-Ben Gamel
-Bryan Reynolds
-Anthony Alford
+Difo,Wilmer
+Stallings,Jacob
+Moran,Colin
+Chavis,Michael
+Park,Hoy
+Newman,Kevin
+Gamel,Ben
+Reynolds,Bryan
+Alford,Anthony

@@ -47,6 +47,7 @@ class Lineup:
             self._generate_random_lineup()
             self.random_lineup = True
 
+        # TODO: may go against MV architecture
         # display the players
         print("Players:")
         for player in self.players:
@@ -83,11 +84,10 @@ class Lineup:
         for index in player_indexes:
             self._add_player(players[index])
 
-    # TODO: standardize player name formats to last_name,first_name
     def _generate_file_lineup(self, lineup_filename: str) -> None:
         '''
             Sets the players in the lineup file to this lineup, in the order listed in the file
-            Player names in form: first_name last_name
+            Player names in form: last_name,first_name
         '''
 
         # TODO: what if lineup_filename not located in package contents (i.e. is user generated?)

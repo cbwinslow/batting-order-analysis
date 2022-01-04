@@ -1,9 +1,9 @@
-Walker Buehler
-Cody Bellinger
-Mookie Betts
-Corey Seager
-Will Smith
-Max Muncy
-AJ Pollock
-Trea Turner
-Justin Turner
+Buehler,Walker
+Bellinger,Cody
+Betts,Mookie
+Seager,Corey
+Smith,Will
+Muncy,Max
+Pollock,AJ
+Turner,Trea
+Turner,Justin

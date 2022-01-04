@@ -1,9 +1,9 @@
-Buster PoseyIII
-Brandon Crawford
-Evan Longoria
-Logan Webb
-Kris Bryant
-Tommy LaStella
-Mike Yastrzemski
-Wilmer Flores
-Darin Ruf
+PoseyIII,Buster
+Crawford,Brandon
+Longoria,Evan
+Webb,Logan
+Bryant,Kris
+LaStella,Tommy
+Yastrzemski,Mike
+Flores,Wilmer
+Ruf,Darin
