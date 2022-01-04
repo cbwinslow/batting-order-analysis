@@ -4,6 +4,8 @@
 '''
 
 import pkg_resources
+import pkgutil
+import os.path
 from typing import List, Optional
 import random
 
@@ -94,7 +96,9 @@ class Lineup:
         lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
 
         # get the players specified in the input file
-        raw_players = pkg_resources.resource_stream(__name__, lineup_filepath).read().decode().split('\n')[:-1]
+        raw_players = pkgutil.get_data(__package__, lineup_filepath)
+        print(raw_players)
+#        raw_players = pkg_resources.resource_stream(__name__, lineup_filepath).read().decode().split('\n')[:-1]
         player_names = []
         for player in raw_players:
             first, last = player.split()
