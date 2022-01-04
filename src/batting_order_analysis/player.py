@@ -29,7 +29,7 @@ class Player:
     metadata_isset = False
 
     # main data directory
-    data_directory = 'data/' 
+    data_directory = 'data/'
 
     # in main data directory
     lineups_directory = 'teams/'
@@ -43,13 +43,13 @@ class Player:
         if not Player.metadata_isset:
             Player._set_metadata()
 
-        self.player_info: Dict[str, Any] = {} 
+        self.player_info: Dict[str, Any] = {}
         self._set_player_info(stat_line)
 
-        self.player_pa_probabilities: Dict[str, float] = {} 
-        self._set_player_pa_probabilities()        
+        self.player_pa_probabilities: Dict[str, float] = {}
+        self._set_player_pa_probabilities()
 
-        self.player_pa_thresholds: List[float] = [] 
+        self.player_pa_thresholds: List[float] = []
         self._set_player_pa_thresholds()
 
         self.pa_outcomes: List[List[int]] = []

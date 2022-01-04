@@ -4,6 +4,7 @@
 '''
 
 import pkgutil
+import os.path
 from statistics import mean
 import random
 from typing import List, Tuple, Optional, Dict
@@ -27,7 +28,7 @@ class Simulation:
         self.lineup = lineup
 
         self.pa_outcomes = []
-        self._set_pa_outcomes(pa_outcomes_filename)   
+        self._set_pa_outcomes(pa_outcomes_filename)
 
     def run_full_sim(self) -> None:
         '''
@@ -239,7 +240,7 @@ class Simulation:
         return runs, cur_batter_pos, thru_order
 
     def _set_pa_outcomes(self, outcome_filename: Optional[str]) -> None:
-        ''' 
+        '''
             Generates the PA outcomes for each player in the lineup for each game to be simulated
             If an outcome filename is supplied, sims_per_order will be ignored (only 1 game)
 
@@ -249,17 +250,29 @@ class Simulation:
 
         # set the outcomes in all of the player instances
         if outcome_filename is None:
+            # generate the outcomes based on the players' stats
             for player in self.lineup.players:
                 player.generate_pa_outcomes(self.sims_per_order)
 
         else:
-            # TODO: good place to do this?
+            # set the outcomes based on the input file
+
             self.sims_per_order = 1
 
-            outcome_filepath = Player.data_directory + Player.outcomes_directory + outcome_filename
+            # read the outcomes from the file
+            player_outcomes = []
+            if os.path.exists(outcome_filename):
+                # file is user generated
+                with open(outcome_filename, 'r') as outcome_f:
+                    for line in outcome_f:
+                        player_outcomes.append(line[:-1])
 
-            player_outcomes = pkgutil.get_data(__package__, outcome_filepath).decode().split('\n')[:-1]
+            else:
+                # file is in package contents
+                outcome_filepath = Player.data_directory + Player.outcomes_directory + outcome_filename
+                player_outcomes = pkgutil.get_data(__package__, outcome_filepath).decode().split('\n')[:-1]
 
+            # set all of the outcomes for each player instance
             for player_outcome in player_outcomes:
                 first_name, last_name = player_outcome.split(':')[0].split()
                 player = self.lineup.get_player(first_name, last_name)
@@ -279,6 +292,7 @@ class Simulation:
         '''
             Returns the index of the next batter
         '''
+
         if cur_batter == 8:
             return 0, thru_order+1
 
