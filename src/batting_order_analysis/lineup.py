@@ -90,13 +90,17 @@ class Lineup:
             Player names in form: last_name,first_name
         '''
 
-        print(os.path.exists(lineup_filename))
+        player_names = []
+        if os.path.exists(lineup_filename):
+            # file is user generated
+            with open(lineup_filename, 'r') as lineup_f:
+                for line in lineup_f:
+                    player_names.append(line[:-1])
 
-        # TODO: what if lineup_filename not located in package contents (i.e. is user generated?)
-        lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
-
-        # get the players specified in the input file
-        player_names = pkgutil.get_data(__package__, lineup_filepath).decode().split('\n')[:-1]
+        else:
+            # file is in package contents
+            lineup_filepath = Player.data_directory + Player.lineups_directory + lineup_filename
+            player_names = pkgutil.get_data(__package__, lineup_filepath).decode().split('\n')[:-1]
 
         self._generate_playername_arr_lineup(player_names)
 
