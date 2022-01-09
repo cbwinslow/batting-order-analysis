@@ -22,7 +22,8 @@ def parse_arguments(args: List[str]) -> Tuple[Optional[str], Optional[str], int]
     '''
         Parses the commandline arguments
         Possible options:
-            -f (user defined lineup filename, see giants.txt)
+            -lf (user defined lineup filename, see giants.txt)
+            -of (user defined outcome filename, see giants_outcomes.txt)
             -n (number of simulations per batting order)
     '''
 
